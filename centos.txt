@@ -1,0 +1,14 @@
+to change the hostname permanently, you need to change it in two places:
+
+vi /etc/sysconfig/network
+NETWORKING=yes
+HOSTNAME=newHostName
+and: a good idea if you have any applications that need to resolve the IP of the hostname)
+
+vi /etc/hosts 
+127.0.0.1 newHostName
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+and then
+
+ rebooting the system

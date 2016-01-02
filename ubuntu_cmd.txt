@@ -1,0 +1,137 @@
+
+sudo sed -i 's/http:\/\/cn./http:\/\//g' /etc/apt/sources.list
+sudo rm -rf /var/lib/apt/lists/*
+sudo apt-get update
+
+find /var/lib/nginx/proxy -type f -regex '.+/[0-9]+$' | xargs -I '{}' rm
+"{}"
+
+//macOSX flush dns cache
+sudo dscacheutil -flushcache
+
+//gitolite setup procedure
+sudo adduser --system --shell /bin/bash --group --disabled-password --home /home/git git
+sudo apt-get install gitolite3
+scp ~/.ssh/id_rsa.pub david@192.168.1.188:/home/david
+sudo su - git
+gitolite setup -pk /home/david/*.pub
+
+
+ssh git@hostname info
+//generate key pair
+ssh-keygen -t rsa
+
+cat /proc/version
+uname -a
+lsb_release -a
+cat /etc/issue
+
+//ubuntu enable mcrypt
+sudo apt-get install php5-mcrypt
+sudo ln -s /etc/php5/conf.d/mcrypt.ini /etc/php5/mods-available/mcrypt.ini
+sudo php5enmod mcrypt
+sudo service php5-fpm restart
+//or
+sudo pkill php5-fpm; sudo service php5-fpm start
+sudo service nginx restart
+//centos7
+yum -y install php-mcrypt
+sudo systemctl restart php-fpm
+sudo systemctl restart nginx.service
+
+git remote set-url origin https://github.com/USERNAME/OTHERREPOSITORY.git
+<?php
+/* Redirect browser */
+ header('Location: http://' . $_SERVER['HTTP_HOST'] . '/cmsmadesimple/');
+/* Make sure that code below does not get executed when we redirect. */
+exit;
+?>
+openssl req -new -newkey rsa:4096 -nodes -keyout freego.key -out freego.csr
+openssl x509 \
+       -signkey freego.key \
+       -in freego.csr \
+       -req -days 2048 -out freego.crt
+
+Installing NginX 1.9.2 in Ubuntu server 14.04.2 LTS
+Since the version of NginX in Ubuntu Server 14.04.2 is only 1.4.6, we need to tell APT to install the more recent version of nginx directly from the NginX maintainer.
+Steps:
+Add the following lines in /etc/apt/sources.list
+deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx
+deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx
+
+From your server download the signing key add it to the apt program keyring with the following commands:
+cd /etc/apt
+sudo wget http://nginx.org/keys/nginx_signing.key
+sudo apt-key add nginx_signing.key
+
+
+Install NginX:
+apt-get update
+apt-get install nginx
+
+Verify its version:
+/usr/sbin/nginx -V
+
+nginx version: nginx/1.9.2
+You’re off and running
+sudo apt-get purge nginx nginx-common
+sudo apt-get install nginx
+
+location ~ \.php$ {
+    include fastcgi_params;
+    fastcgi_pass  127.0.0.1:9000;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
+}
+
+//node bb
+sudo apt-get install libkrb5-dev
+
+./letsencrypt-auto certonly --standalone --agree-tos  --email ww@wwpp.date -d wwpp.date -d mygirl.site -d piao.gift -d novice.ren -d freeland.online
+
+curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
+sudo apt-get install -y nodejs
+//If your npm is broken
+curl -L https://www.npmjs.org/install.sh | sh
+
+/etc/letsencrypt/live/wwpp.date/fullchain.pem
+
+./letsencrypt-auto certonly --standalone --agree-tos  --email david@cninone.com -d ily365.cn -d shop.ily365.cn -d go.ily365.cn -d game.ily365.cn -d bbs.ily365.cn -d www.ily365.cn -d admin.ily365.cn
+
+//enable gitignore
+git rm -r --cached .
+git add .
+git commit -m ".gitignore is now working"
+
+apt-get install php7.0-cli php7.0-common  php7.0 php7.0-mysql php7.0-fpm php7.0-curl php7.0-gd 
+
+docker commit ac6820e5f8f0 novice/freego
+//mysql 服务只能本机访问，不对外公开
+docker run -p 222:22 -p 80:80 -v /Users/piao/workspace/docker_test:/var/www:rw -d --name fg -t novice/freego
+docker run -p 222:22 -p 80:80 -d --name fg -t test
+
+xz -d **.tar.xz
+tar -xv -f **.tar
+//or
+tar xvJf  ***.tar.xz来解压
+tar cvJf <archive.tar.xz> <files>
+tar cf - directory/ | xz -zf - > directory.tar.xz
+
+sudo service --status-all
+sudo initctl list
+
+# possibility 1:
+printf '%s\n\t%s\n' 'Host localhost' 'ForwardAgent yes' >> file.txt
+
+# possibility 2:
+echo "line 1
+line 2" >> greetings.txt
+
+# possibility 3:
+cat <<EOT >> greetings.txt
+line 1
+line 2
+EOT
+
+cat ~/.ssh/id_rsa.pub | ssh kjy "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
+//and for SELinux also do: restorecon -R -v ~/.ssh

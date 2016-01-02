@@ -1,0 +1,24 @@
+先安装一些必须的包
+yum install gcc zlib python-devel libffi-devel openssl-devel
+下载源码包
+wget https://www.python.org/ftp/python/2.7.11/Python-2.7.11.tgz
+tar -zxf Python-2.7.11.tgz
+cd Python-2.7.11
+配置SSL模块
+cd Module
+vi Setup.dist  #找到SSL的行，将那句注释取消，为什么默认是注释掉的，请看文件内说明
+编译和安装
+cd ../
+./configure --prefix=/usr/local
+make
+make altinstall
+修复yum和设置默认python
+ln -fs /usr/local/bin/python2.7 /usr/bin/python
+vi /usr/bin/yum #yum依赖python2.6，修改头部env的python指向
+安装python开发包管理工具
+curl https://bootstrap.pypa.io/ez_setup.py | python2.7 -
+curl https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py | python2.7 -
+安装其他python常用包
+pip install requests
+pip install gevent
+pip install python-memcached
