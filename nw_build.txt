@@ -1,0 +1,10 @@
+node-pre-gyp rebuild --runtime=node-webkit --target=0.12.3 --target_arch=ia32 --target_platform=win32
+
+cd your_node_webkit_project_path (the one that includes the package.json)
+npm install serialport
+npm install node-pre-gyp -g
+cd node_modules/serialport
+node-pre-gyp rebuild --runtime=node-webkit --target=0.12.3
+//for cors
+"chromium-args":"—disable-web-security"
+"node-remote":"*"

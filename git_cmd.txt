@@ -1,1 +1,3 @@
 git config receive.denyCurrentBranch ignore
+cat ~/.ssh/id_rsa.pub | ssh aly 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+git remote set-url origin git@192.168.0.188:gitolite-admin

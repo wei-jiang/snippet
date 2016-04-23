@@ -1,0 +1,9 @@
+keytool -genkey -v -keystore freego.keystore -alias freego -keyalg RSA -keysize 2048 -validity 50000
+cordova build android --release
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore freego.keystore freego.apk freego
+
+Create an ant.properties file in platforms/android/ with a keystore path and alias name:
+
+key.store=/path/to/keystore/release_key_name.keystore
+key.alias=alias_name
+The standard Cordova CLI release build process will now prompt for the password and automatically sign the APK, ready for upload to Google Play, or other distribution method. The APK will be created at platforms/android/ant-build/app_name-release.apk

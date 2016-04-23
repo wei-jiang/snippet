@@ -1,0 +1,47 @@
+sudo -i
+sudo openssl passwd -1 > cloud-config.yml
+cat cloud-config.yml
+xxxxxxxxxx
+
+vi cloud-config-file
+
+users:
+ - name: david
+   passwd: xxxxxxxxx
+   groups:
+     - sudo
+	 - docker
+
+sudo coreos-install -d /dev/sda -C stable -c cloud-config.yml
+
+#cloud-config
+hostname: ww-coreOS
+coreos:  
+  etcd:    
+    addr: $private_ipv4:4001
+    peer-addr: $private_ipv4:7001
+  units:
+    - name: etcd.service
+      command: start
+    - name: fleet.service
+      command: start
+    - name: static.network
+      content: |
+        [Match]
+        Name=eth0
+
+        [Network]
+        Address=192.168.1.100/24
+        Gateway=192.168.1.1
+        DNS=223.5.5.5
+        DNS=223.6.6.6
+        DNS=8.8.8.8
+users:  
+  - name: ww
+    passwd: $1$hT3WSRoe$TyN7ukiFSEcscT89cHVwj/
+    ssh-authorized-keys: 
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCvBDg7mdWnq62ncVmGgKQo0pBJa3rdCaJD9kq5JSqx+mPBwcgCOvZYgeZt1/Mbu3p76KUcGVEaY6zJkMhKeE+/tBJ12Ofu9nzotj/uy6AcXa9vjqFt7EuuGGHe5d5z/bDpWgoks+2FQG0Yihj4mqLZ6l/CTElI/LvaM534wuyEm7Hk2pZa7y/V0Upe3if3UWGPlc3+bNpBMCTgRd8/QPEj0KcRFCc8/CSOfCzUe38zviX0JzhCCPyhoA8vpge2zGMxDVpkyk41+0NhW+mjeB9AJ6N/PHF4LFUxvxMC07sgHOyGxzaB6QA24k4VQmUDehJoKz6vwToj+cZoj/hnYxN1 ww@wwpp.date
+
+  - groups:
+      - sudo
+      - docker

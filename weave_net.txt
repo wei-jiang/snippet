@@ -1,0 +1,41 @@
+sudo curl -L git.io/weave -o /usr/local/bin/weave
+sudo chmod a+x /usr/local/bin/weave
+
+//if Is the docker daemon running on this host?
+logout & login again
+
+aly$ weave launch --ipalloc-range 192.168.79.0/24
+aly$ eval $(weave env)
+aly$ docker run --name a1 -ti ubuntu
+docker run -p 40022:22 -p 40080:80 -p 40443:443 -p 43306:3306 -d --name aly -t novice/lemp
+
+ub$ weave launch --ipalloc-range 192.168.79.0/24 120.25.64.88
+#ub$ weave launch $HOST1
+ub$ eval $(weave env)
+ub$ docker run --name a2 -ti ubuntu
+ub$ docker run -p 40022:22 -p 40080:80 -p 40443:443 -p 43306:3306 -d --name ub -t novice/lemp supervisord
+
+ub2$ weave launch --ipalloc-range 192.168.79.0/24 120.25.64.88
+ub2$ eval $(weave env)
+ub2$ docker run -p 40022:22 -p 40080:80 -p 40443:443 -p 43306:3306 -d --restart=always --name ub2 -t lemp_with_git supervisord
+docker run -p 40022:22 -p 40080:80 -p 40443:443 -p 43306:3306 -d --name ub2 -t lemp_with_git supervisord
+
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+
+docker save novice/lemp | xz > lemp.tar.xz
+docker load < lemp.tar.xz
+docker load -i lemp.tar.xz
+
+IPv4专用地址如下：
+IP等级 IP位置
+Class A 10.0.0.0-10.255.255.255
+默认子网掩码:255.0.0.0
+Class B 172.16.0.0-172.31.255.255
+默认子网掩码:255.255.0.0
+Class C 192.168.0.0-192.168.255.255
+默认子网掩码:255.255.255.0
+A、B、C类地址都各有一个IP段专用做内网(私有地址)
+A类 10.0.0.0 --10.255.255.255 　　
+B类 172.16.0.0--172.31.255.255 　　
+C类 192.168.0.0--192.168.255.255

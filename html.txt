@@ -1,0 +1,5 @@
+<!--可以在收藏夹中显示出图标-->  
+<link rel="Bookmark"  type="image/x-icon"  href="favicon.ico"/>  
+<!--可以在地址栏中显示出图标-->  
+<link rel="icon"  type="image/x-icon" href="favicon.ico" />  
+<link rel="shortcut icon"  type="image/x-icon" href="favicon.ico" /> 

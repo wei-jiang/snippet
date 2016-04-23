@@ -12,7 +12,7 @@ sudo dscacheutil -flushcache
 //gitolite setup procedure
 sudo adduser --system --shell /bin/bash --group --disabled-password --home /home/git git
 sudo apt-get install gitolite3
-scp ~/.ssh/id_rsa.pub david@192.168.1.188:/home/david
+scp ~/.ssh/id_rsa.pub david@192.168.1.188:/home/david/
 sudo su - git
 gitolite setup -pk /home/david/*.pub
 
@@ -26,18 +26,6 @@ uname -a
 lsb_release -a
 cat /etc/issue
 
-//ubuntu enable mcrypt
-sudo apt-get install php5-mcrypt
-sudo ln -s /etc/php5/conf.d/mcrypt.ini /etc/php5/mods-available/mcrypt.ini
-sudo php5enmod mcrypt
-sudo service php5-fpm restart
-//or
-sudo pkill php5-fpm; sudo service php5-fpm start
-sudo service nginx restart
-//centos7
-yum -y install php-mcrypt
-sudo systemctl restart php-fpm
-sudo systemctl restart nginx.service
 
 git remote set-url origin https://github.com/USERNAME/OTHERREPOSITORY.git
 <?php
@@ -60,9 +48,8 @@ deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx
 deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx
 
 From your server download the signing key add it to the apt program keyring with the following commands:
-cd /etc/apt
-sudo wget http://nginx.org/keys/nginx_signing.key
-sudo apt-key add nginx_signing.key
+sudo wget -qO - http://nginx.org/keys/nginx_signing.key | sudo apt-key add -
+
 
 
 Install NginX:

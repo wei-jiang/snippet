@@ -1,6 +1,13 @@
 linux下curl简单应用详解 (2013-10-13 17:09:07)
 
-
+//restful test by curl
+curl -H "Content-Type: application/json" \
+     -X POST \
+     -d '{"name":"Albina Press", "address": " 5012 Southeast Hawthorne
+           Boulevard, Portland, OR", "zipcode": 97215, "price": 2,
+          "max_seats": 40, "power": true, "wifi": true}' \
+     http://localhost:8080/api/coffeeshops/
+     
 
 Curl是Linux下一个很强大的http命令行工具，其功能十分强大。
 
