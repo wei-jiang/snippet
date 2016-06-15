@@ -1,0 +1,75 @@
+https://ffmpeg.org/ffserver.html
+
+ffserver -f /opt/ffmpeg/share/ffserver.conf &
+ffmpeg -i rtsp://192.168.0.10/h264ESVideoTest -c copy -f flv http://localhost:8090/feed1.ffm &
+ffmpeg -i rtsp://192.168.0.10/h264ESVideoTest http://localhost:8090/feed1.ffm &
+
+
+<Stream live.h264>
+Format rtp
+Feed feed1.ffm
+VideoCodec libx264
+VideoFrameRate 24
+VideoBitRate 100
+VideoSize 480x272
+AVPresetVideo default
+AVPresetVideo baseline
+AVOptionVideo flags +global_header
+
+AudioBitRate 32
+AudioChannels 2
+AudioSampleRate 22050
+AVOptionAudio flags +global_header
+</Stream>
+
+//vi /etc/ffserver.conf 
+//ggVG
+HTTPPort 8090 
+RTSPPort 8091
+HTTPBindAddress 0.0.0.0 
+RTSPBindAddress 0.0.0.0
+# max number of simultaneous clients 
+MaxClients 2000 
+# max bandwidth 100M 
+MaxBandwidth 100000 
+# Suppress that if you want to launch ffserver as a daemon. 
+
+<Feed feed1.ffm> 
+File /tmp/feed1.ffm 
+FileMaxSize 50M
+Launch ffmpeg -i rtsp://192.168.0.10/h264ESVideoTest 
+#ACL allow 127.0.0.1 
+</Feed> 
+
+<Stream in>
+Format mpjpeg
+Feed feed1.ffm
+VideoFrameRate 25
+#VideoBitRate 4096
+#VideoBitRateRange 1024-2048
+#VideoBufferSize 80000
+VideoSize 800x600
+# Suppress audio
+NoAudio
+</Stream>
+
+# Server status
+
+<Stream stat.html>
+Format status
+
+# Only allow local people to get the status
+ACL allow localhost
+ACL allow 192.168.0.0 192.168.255.255
+
+#FaviconURL http://pond1.gladstonefamily.net:8080/favicon.ico
+</Stream>
+# Redirect index.html to the appropriate site
+<Redirect index.html>
+URL http://www.ily365.cn/
+</Redirect>
+
+
+nohup ffmpeg -i rtsp://192.168.0.10/h264ESVideoTest http://ily365.cn:8090/feed1.ffm &
+
+cmake -DBOOST_ROOT:STRING=c:\boost -DBOOST_VER:STRING=1.61 ..

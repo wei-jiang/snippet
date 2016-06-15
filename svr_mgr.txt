@@ -19,3 +19,9 @@ backend nodes
     server web02 127.0.0.1:5555
     timeout connect        10s
     timeout server          1m
+    
+    
+centos6 pub key login
+//in server 
+chmod -R 700 ~/.ssh
+restorecon -R -v ~/.ssh

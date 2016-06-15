@@ -1,3 +1,37 @@
 git config receive.denyCurrentBranch ignore
-cat ~/.ssh/id_rsa.pub | ssh aly 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+1、创建秘钥对，生成到默认的~/.ssh/ 目录下：
+ssh-keygen -t rsa -b 4096 -C "david@cninone.com"
+2、创建ssh配置文件：
+vi ~/.ssh/config 
+添加以下内容：
+Host cl1
+     HostName 192.168.0.252
+     User weihu
+     Port 1604
+     IdentityFile ~/.ssh/id_rsa
+Host cl2
+     HostName 192.168.0.253
+     User weihu
+     Port 1604
+     IdentityFile ~/.ssh/id_rsa
+3、把公钥拷贝到其它服务器：     
+cat ~/.ssh/id_rsa.pub | ssh cl1 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+cat ~/.ssh/id_rsa.pub | ssh cl2 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+P.S.第一次拷贝时需输入weihu用户的密码，后面直接ssh cl1 or ssh cl2就登陆到后面两台服务器去了（不再用密码）
 git remote set-url origin git@192.168.0.188:gitolite-admin
+
+cat ~/.ssh/id_rsa.pub | ssh cl0 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+
+sudo rm -rf /var/lib/apt/lists/*
+git config --local receive.denyCurrentBranch ignore
+cd .git/hooks 
+vi post-receive 放入如下命令：
+#!/bin/sh
+cd ..
+env -i git reset --hard
+//and then
+chmod +x post-receive
+
+https://www.digitalocean.com/community/tutorials/how-to-use-git-hooks-to-automate-development-and-deployment-tasks
+
+find ~ -type f -size +2G

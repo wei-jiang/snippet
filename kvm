@@ -1,0 +1,143 @@
+virsh net-list
+sudo virt-install \
+--virt-type=kvm \
+--name win2k8 \
+--ram 4096 \
+--vcpus=2 \
+--accelerate \
+--os-type=windows \
+--os-variant=win2k8 \
+--hvm \
+--cdrom=/data/win2k8.iso \
+--network network=ovsbr0,model=virtio \
+--graphics vnc \
+--disk path=/data/win2k8.img,size=80
+
+sudo virt-install \
+--virt-type=kvm \
+--name win7 \
+--ram 2048 \
+--video=cirrus \
+--vcpus=2 \
+--accelerate \
+--os-type=windows \
+--os-variant=win7 \
+--hvm \
+--cdrom=/data/win7.iso \
+--network network=default,model=virtio \
+--graphics vnc \
+--disk path=/data/win7.img,size=50,bus=virtio
+
+virsh dumpxml win7 | grep vnc
+ssh cl0 -L 5901:127.0.0.1:5901
+
+sudo virt-install \
+--virt-type=kvm \
+--name winxp \
+--ram 1024 \
+--vcpus=1 \
+--accelerate \
+--os-type=windows \
+--os-variant=winxp \
+--hvm \
+--cdrom=/data/winxp_sp3.iso \
+--network network=default,model=virtio \
+--graphics vnc \
+--disk path=/data/winxp_sp3.img,size=10
+
+virsh domblklist winxp
+virsh change-media winxp hdc --eject
+virsh change-media winxp hdc /data/virtio-win.iso --insert
+ssh cl0 -L 5900:127.0.0.1:5900
+sudo virsh start winxp
+sudo virsh list
+virsh destroy win7
+virsh undefine win7
+#virsh vol-delete --pool vg0 win7.img
+
+sudo virt-install \
+--virt-type=kvm \
+--name ub16_04 \
+--accelerate \
+--os-type=linux \
+--ram 2048 \
+--vcpus=2 \
+--hvm \
+--cdrom=ubuntu-16.04-server-amd64.iso \
+--network network=default,model=virtio \
+--graphics vnc \
+--disk path=/data/ub16_04.img,size=50,bus=virtio
+
+
+virt-install --os-variant list
+
+sudo virt-install \
+--virt-type=kvm \
+--name winxp \
+--ram 1024 \
+--vcpus=1 \
+--accelerate \
+--os-type=windows \
+--os-variant=winxp \
+--hvm \
+--cdrom=/root/winxp_sp3.iso \
+--network network=default,model=virtio \
+--graphics vnc \
+--disk path=/root/winxp_sp3.img,size=10
+ 
+ 
+cat /sys/module/kvm_intel/parameters/nested
+N
+sudo rmmod kvm-intel
+sudo sh -c "echo 'options kvm-intel nested=y' >> /etc/modprobe.d/dist.conf"
+sudo modprobe kvm-
+cat /sys/module/kvm_intel/parameters/nested
+Y
+
+virt-install \
+--virt-type=kvm \
+--name ub16_04 \
+--accelerate \
+--os-type=linux \
+--ram 2048 \
+--vcpus=2 \
+--hvm \
+--cdrom=/data/ubuntu-16.04-server-amd64.iso \
+--network network=default,model=virtio \
+--graphics vnc \
+--disk path=/data/ub16_04.img,size=200,bus=virtio
+
+ssh kjy -L 5900:127.0.0.1:5900
+
+
+<graphics type='vnc' port='-1' autoport='yes' listen='0.0.0.0' passwd='protectme'/>
+
+
+//remove: ,bus=virtio
+//--vnc --vncport=5932 --vnclisten=0.0.0.0  
+sudo virt-install \
+--virt-type=kvm \
+--name win7 \
+--ram 2048 \
+--video=cirrus \
+--vcpus=2 \
+--accelerate \
+--os-type=windows \
+--os-variant=win7 \
+--hvm \
+--cdrom=/data/windows7sp1x86.iso \
+--network network=default,model=virtio \
+--vnc --vnclisten=0.0.0.0 \
+--disk path=/data/win7.img,size=100
+
+
+virsh change-media win7 hdc --eject
+virsh change-media win7 hdc /data/virtio-win.iso --insert
+
+
+ssh cl -L 5901:127.0.0.1:5901
+
+service --status-all
+service libvirt-bin restart
+
+apt-get install cpu-checker

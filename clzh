@@ -1,0 +1,1 @@
+./certbot-auto certonly --standalone --email david@cninone.com -d shop.lyclzh.com

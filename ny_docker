@@ -1,0 +1,68 @@
+docker run -p 40022:22 -p 40080:80 -p 40443:443 -p 3306:3306 -p 4567:4567 -p 4444:4444 -p 4568:4568 -d \
+-v /fg_data/apps/oc:/var/www:rw \
+-v /fg_data/mysql:/var/lib/mysql  \
+--name aly -t novice/lemp \
+--wsrep-cluster-address=gcomm:// --wsrep-node-address=220.169.248.228
+
+docker run -p 40022:22 -p 40080:80 -p 40443:443 -p 3306:3306 -p 4567:4567 -p 4444:4444 -p 4568:4568 -d \
+--name ny_lb -t novice/lemp \
+--wsrep-cluster-address=gcomm:// --wsrep-node-address=220.169.248.228
+
+
+
+cat ~/.ssh/id_rsa.pub | ssh lb2 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+cat ~/.ssh/id_rsa.pub | ssh fs 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+cat ~/.ssh/id_rsa.pub | ssh oc1 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+cat ~/.ssh/id_rsa.pub | ssh oc2 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+cat ~/.ssh/id_rsa.pub | ssh oc3 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+cat ~/.ssh/id_rsa.pub | ssh oc4 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+cat ~/.ssh/id_rsa.pub | ssh db1 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+cat ~/.ssh/id_rsa.pub | ssh db2 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+
+docker run -p 40080:80 -p 40443:443  -d \
+-v /data/temp:/var/www:rw \
+--name ny_lb -t novice/lemp
+
+220.169.248.228
+sudo apt-get install linux-headers-$(uname -r) build-essential virtualbox-5.0 dkms
+
+http://download.virtualbox.org/virtualbox/5.0.20/Oracle_VM_VirtualBox_Extension_Pack-5.0.20-106931.vbox-extpack
+
+VBoxManage createvm --name "winxp" --ostype WindowsXP --register
+VBoxManage list ostypes
+VBoxManage modifyvm "winxp" --memory 1024 --acpi on --boot1 dvd --nic1 nat
+cd /data/
+VBoxManage createhd --filename "winxp.vdi" --size 30000
+VBoxManage storagectl "winxp" --name "IDE Controller" --add ide --controller PIIX4
+VBoxManage storageattach "winxp" --storagectl "IDE Controller" --port 0 --device 0 --type hdd --medium "winxp.vdi"
+VBoxManage storageattach "winxp" --storagectl "IDE Controller" \
+--port 0 --device 1 --type dvddrive --medium /data/winxp_sp3.iso
+VBoxManage modifyvm "winxp" --vrde on
+
+VBoxManage setproperty vrdeauthlibrary "VBoxAuthSimple"
+VBoxManage modifyvm "winxp" --vrdeauthtype external
+VBoxManage modifyvm "winxp" --vrdeauthtype null
+VBoxManage internalcommands passwordhash "freego2016"
+Password hash: b26c3708a876218960672694f5d124d7c63e08062fb558e1cac0a9f9fe39a3a3
+VBoxManage setextradata "winxp" "VBoxAuthSimple/users/freego" b26c3708a876218960672694f5d124d7c63e08062fb558e1cac0a9f9fe39a3a3
+
+VBoxHeadless --startvm "winxp"
+VBoxManage getextradata "winxp" enumerate
+VBoxManage showvminfo "winxp"
+vboxmanage showvminfo "winxp" |grep VRDE:
+//VBoxHeadless -startvm "winxp" --vnc
+
+vboxmanage setproperty vrdeextpack VNC
+vboxmanage modifyvm winxp --vrdeproperty VNCPassword=freego2016
+vboxmanage modifyvm winxp --vrde on
+vboxmanage startvm winxp --type headless
+vboxmanage modifyvm winxp --vrdeport 5906
+
+VBoxManage controlvm "winxp" setcredentials freego freego2016 freeland
+
+VBoxManage unregistervm "winxp" --delete
+VBoxManage modifyvm "winxp" --vrdeport 1605,1606-1607 
+VBoxManage controlvm winxp poweroff
+VBoxManage setproperty vrdeauthlibrary "VBoxAuth"
+VBoxManage controlvm winxp pause
+VBoxManage modifyvm "winxp" --vrdeauthtype external
