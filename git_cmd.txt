@@ -35,3 +35,10 @@ chmod +x post-receive
 https://www.digitalocean.com/community/tutorials/how-to-use-git-hooks-to-automate-development-and-deployment-tasks
 
 find ~ -type f -size +2G
+git fetch --all; git branch -vv
+https://git-scm.com/book/ch3-5.html
+git push origin --delete serverfix
+
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/novice79
+ssh-add ~/.ssh/id_rsa

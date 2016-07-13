@@ -21,3 +21,6 @@ Note: After the update command, new application configurations becomes available
 
 supervisorctl start ffserver
 supervisorctl restart ffserver
+
+https://www.digitalocean.com/community/tutorials/the-upstart-event-system-what-it-is-and-how-to-use-it
+https://www.digitalocean.com/community/tutorials/systemd-essentials-working-with-services-units-and-the-journal

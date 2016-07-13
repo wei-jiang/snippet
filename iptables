@@ -10,6 +10,7 @@ iptables -t nat -I POSTROUTING -p tcp --dport 25565 -j MASQUERADE
 iptables -t nat -I POSTROUTING -p tcp --dport 25566 -j MASQUERADE
 
 iptables -t nat -A PREROUTING -p tcp --dport 10080 -j DNAT --to 192.168.122.122:80
+iptables -t nat -A PREROUTING -p tcp --dport 10022 -j DNAT --to 192.168.122.122:22
 iptables -t nat -A POSTROUTING -j MASQUERADE
 
 service iptables restart

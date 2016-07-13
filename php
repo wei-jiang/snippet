@@ -69,3 +69,7 @@ int main()
 swig -c++ -php t.i	
 g++ `php-config --includes` -fpic -c t_wrap.cpp t.cpp
 g++ -shared example_wrap.o -o t.so
+php -m | grep pthreads
+http://eddmann.com/posts/compiling-php-5-5-with-zts-and-pthreads-support/
+https://github.com/zyzo/meteor-ddp-php
+http://ask.xmodulo.com/check-glibc-version-linux.html

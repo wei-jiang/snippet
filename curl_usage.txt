@@ -238,16 +238,17 @@ curl -H "Content-Type: application/json" \
 -X POST -d '{"num":1}' \
 http://192.168.1.20:4444/ts_open_b
 
-curl -H "Content-Type: application/json" \
+curl -H "Content-Type: application/json"H \
 -X POST -d '{"num":1}' \
 http://192.168.1.20:4444/ts_open_a_const
 
 curl http://192.168.1.20:4444/ts_open_b
-/*
- "cocos2d" : [
- "core", "kazmath", "shaders", "render-texture", "motion-streak", "node-grid",
- "clipping-nodes", "effects", "shape-nodes", "actions", "actions3d",
- "progress-timer", "transitions", "labels", "compression", "particle",
- "text-input", "menus", "tilemap", "parallax", "audio"
- ]
- */
+
+cat req.xml | curl -X POST -H 'Content-type: text/xml' -d @- http://www.example.com
+or
+
+curl -X POST -H 'Content-type: text/xml' -d @req.xml http://www.example.com
+or
+
+curl -X POST -H 'Content-type: text/xml'  -d '<XML>data</XML>' http://www.example.com 
+https://deltacloud.apache.org/curl-examples.html

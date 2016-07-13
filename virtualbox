@@ -82,3 +82,12 @@ Once the rule is created, you can verify that by using the command below.
 
 $ VBoxManage showvminfo "centos6" | grep NIC
 ssh -p 2022 root@127.0.0.1
+
+VBoxManage list vms
+VBoxManage list runningvms
+VBoxManage modifyvm 'winxp' --nic1 nat
+VBoxManage modifyvm "winxp" --natpf1 "NCE,tcp,0.0.0.0,2448,10.0.2.15,448"
+VBoxManage modifyvm "winxp" --natpf1 "NCS,tcp,0.0.0.0,2449,10.0.2.15,449"
+VBoxManage startvm "winxp" --type headless
+VBoxManage modifyvm "winxp" --natpf1 delete NCE
+VBoxManage modifyvm "winxp" --natpf1 delete NCS
