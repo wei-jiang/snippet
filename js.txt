@@ -1,2 +1,3 @@
 $(".meter1").on("click", _.throttle(changeMeter, 1000));
 $(".meter2").on("click", _.debounce(changeMeter, 1000, true));
+http://www.hongkiat.com/blog/grayscale-image-web/

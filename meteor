@@ -10,6 +10,7 @@ https://www.digitalocean.com/community/tutorials/how-to-deploy-a-meteor-js-appli
 https://www.digitalocean.com/community/tutorials/the-upstart-event-system-what-it-is-and-how-to-use-it
 
 meteor build --architecture=os.linux.x86_64 ../dist/
+meteor build ../dist/
 
 docker run -d \
     -e ROOT_URL=http://localhost:8080 \
@@ -49,3 +50,13 @@ docker run -d \
     -v /Users/piao/experiment/meteor_test/dist/bundle:/built_app \
     -p 4444:80 \
     novice/meteord      
+
+docker commit -a "david@cninone.com" -m "add meteor env" mub mub
+    
+docker run -it --name mub \
+-p 2016:2016 -p 20000:20000 -p 3000:3000 \
+-v /Users/piao/wisdom_work/gl_repo/fgmap:/fgmap \
+mub bash   
+
+sudo npm install -g n
+sudo n 0.10.43

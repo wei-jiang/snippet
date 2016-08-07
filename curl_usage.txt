@@ -252,3 +252,7 @@ or
 
 curl -X POST -H 'Content-type: text/xml'  -d '<XML>data</XML>' http://www.example.com 
 https://deltacloud.apache.org/curl-examples.html
+
+curl -H "Content-Type: application/json"H \
+-X POST -d '{"type":"3", "code":"clzh00001906"}' \
+http://192.168.0.251:6080/index.php?route=api/use_ticket

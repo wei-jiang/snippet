@@ -25,3 +25,8 @@ followed by:
 Ctrl+D (or exit, but why type so much?)
 
 to kill the shell and return to vim
+
+[Control][b] - Move back one full screen
+[Control][f] - Move forward one full screen
+[Control][d] - Move forward 1/2 screen
+[Control][u] - Move back (up) 1/2 screen

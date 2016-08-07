@@ -3,3 +3,4 @@
 <!--可以在地址栏中显示出图标-->  
 <link rel="icon"  type="image/x-icon" href="favicon.ico" />  
 <link rel="shortcut icon"  type="image/x-icon" href="favicon.ico" /> 
+http://www.w3schools.com/colors/colors_names.asp

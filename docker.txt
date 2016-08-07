@@ -209,3 +209,7 @@ CMD ["localhost"]    /bin/ping -c 3 localhost
 
  exec form of the ENTRYPOINT/CMD instructions which looks like this:
 CMD ["executable","param1","param2"]
+
+ sudo /etc/init.d/docker restart
+ docker-machine restart default
+ docker run --entrypoint hostname novice/lemp

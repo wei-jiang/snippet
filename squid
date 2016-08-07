@@ -1,0 +1,25 @@
+apt-get install squid3
+/usr/lib/squid3/basic_radius_auth -f /etc/radius_config
+###############
+#radius i.e. meteor server
+server 192.168.0.110
+secret radius_secret
+identifier squid
+port 2016
+###############
+sudo systemctl restart squid.service
+############################# 
+http_port 127.0.0.1:3128
+dns_v4_first on
+via off
+forwarded_for delete
+auth_param basic program /usr/lib/squid3/basic_radius_auth -f /etc/radius_config
+auth_param basic children 5
+auth_param basic realm Web-Proxy
+auth_param basic credentialsttl 5 minute
+auth_param basic casesensitive off
+
+acl radius-auth proxy_auth REQUIRED
+http_access allow radius-auth
+http_access deny all
+##############################
