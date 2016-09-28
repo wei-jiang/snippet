@@ -1,3 +1,46 @@
 git config receive.denyCurrentBranch ignore
-cat ~/.ssh/id_rsa.pub | ssh aly 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+1、创建秘钥对，生成到默认的~/.ssh/ 目录下：
+ssh-keygen -t rsa -b 4096 -C "david@cninone.com"
+2、创建ssh配置文件：
+vi ~/.ssh/config 
+添加以下内容：
+Host cl1
+     HostName 192.168.0.252
+     User weihu
+     Port 1604
+     IdentityFile ~/.ssh/id_rsa
+Host cl2
+     HostName 192.168.0.253
+     User weihu
+     Port 1604
+     IdentityFile ~/.ssh/id_rsa
+3、把公钥拷贝到其它服务器：     
+cat ~/.ssh/id_rsa.pub | ssh cl1 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+cat ~/.ssh/id_rsa.pub | ssh cl2 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+P.S.第一次拷贝时需输入weihu用户的密码，后面直接ssh cl1 or ssh cl2就登陆到后面两台服务器去了（不再用密码）
 git remote set-url origin git@192.168.0.188:gitolite-admin
+
+cat ~/.ssh/id_rsa.pub | ssh cl0 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+
+sudo rm -rf /var/lib/apt/lists/*
+git config --local receive.denyCurrentBranch ignore
+
+find ~ -type f -size +2G
+/Users/piao/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/log/docker.log
+
+git stash
+git pull
+git stash pop
+# if conflict on pop:如果有冲突文件，这时会显示出来，然后checkout这些冲突文件的本地版本就行了
+git checkout --theirs -- conflict.file
+
+git pull -X ours
+
+//git ls-files -i --exclude-from=.gitignore | xargs git rm --cached  
+git rm -r --cached . or git rm --cached file1 file2 dir/file3
+git add .
+git commit -m "Removing all files in .gitignore"
+
+ssh-add ~/.ssh/git
+cp git ~/.ssh/id_rsa
+git clone ssh://git@ily365.cn:1604/fg_data/git_repo/2016-06-22-tag.git

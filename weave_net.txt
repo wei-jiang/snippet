@@ -7,7 +7,10 @@ logout & login again
 aly$ weave launch --ipalloc-range 192.168.79.0/24
 aly$ eval $(weave env)
 aly$ docker run --name a1 -ti ubuntu
-docker run -p 40022:22 -p 40080:80 -p 40443:443 -p 43306:3306 -d --name aly -t novice/lemp
+docker run -p 40022:22 -p 40080:80 -p 40443:443 -p 43306:3306 -d --name aly \
+-v /fg_data/apps/oc:/var/www:rw \
+-v /fg_data/mysql:/var/lib/mysql  \
+-t novice/lemp
 
 ub$ weave launch --ipalloc-range 192.168.79.0/24 120.25.64.88
 #ub$ weave launch $HOST1
@@ -17,11 +20,13 @@ ub$ docker run -p 40022:22 -p 40080:80 -p 40443:443 -p 43306:3306 -d --name ub -
 
 ub2$ weave launch --ipalloc-range 192.168.79.0/24 120.25.64.88
 ub2$ eval $(weave env)
-ub2$ docker run -p 40022:22 -p 40080:80 -p 40443:443 -p 43306:3306 -d --restart=always --name ub2 -t lemp_with_git supervisord
-docker run -p 40022:22 -p 40080:80 -p 40443:443 -p 43306:3306 -d --name ub2 -t lemp_with_git supervisord
+ub2$ docker run -p 40022:22 -p 40080:80 -p 40443:443 -p 43306:3306 -d --restart=always --name ub2 -t novice/lemp supervisord
+docker run -p 40022:22 -p 40080:80 -p 40443:443 -p 43306:3306 -d --name ub2 -t 
+
+novice/lemp 
 
 docker stop $(docker ps -a -q)
-docker rm $(docker ps -a -q)
+docker rm -f $(docker ps -a -q)
 
 docker save novice/lemp | xz > lemp.tar.xz
 docker load < lemp.tar.xz
@@ -39,3 +44,15 @@ A、B、C类地址都各有一个IP段专用做内网(私有地址)
 A类 10.0.0.0 --10.255.255.255 　　
 B类 172.16.0.0--172.31.255.255 　　
 C类 192.168.0.0--192.168.255.255
+NAT is generally used with private IP space, RFC 1918, which is 10.0.0.0/8, 172.16.0.0/12 and 192.168.0.0/16. By
+
+来电后，这几个命令顺序执行：
+1、docker rm -f $(docker ps -a -q)
+2、weave launch --ipalloc-range 192.168.79.0/24 120.25.64.88
+3、eval $(weave env)
+4、docker run -d -p 40022:22 -p 40080:80 -p 40443:443  -p 43306:3306 \
+-v /data/oc:/var/www:rw \
+-v /data/mysql:/var/lib/mysql  \
+--name ub2 novice/lemp
+
+tar -c * | docker exec -i tt /bin/tar -C /usr/lib/php/20151012 -x

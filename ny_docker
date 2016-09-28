@@ -1,0 +1,24 @@
+docker run -p 40022:22 -p 40080:80 -p 40443:443 -p 3306:3306 -p 4567:4567 -p 4444:4444 -p 4568:4568 -d \
+-v /fg_data/apps/oc:/var/www:rw \
+-v /fg_data/mysql:/var/lib/mysql  \
+--name aly -t novice/lemp \
+--wsrep-cluster-address=gcomm:// --wsrep-node-address=220.169.248.228
+
+docker run -p 40022:22 -p 40080:80 -p 40443:443 -p 3306:3306 -p 4567:4567 -p 4444:4444 -p 4568:4568 -d \
+--name ny_lb -t novice/lemp \
+--wsrep-cluster-address=gcomm:// --wsrep-node-address=220.169.248.228
+
+
+
+cat ~/.ssh/id_rsa.pub | ssh lb2 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+cat ~/.ssh/id_rsa.pub | ssh fs 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+cat ~/.ssh/id_rsa.pub | ssh oc1 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+cat ~/.ssh/id_rsa.pub | ssh oc2 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+cat ~/.ssh/id_rsa.pub | ssh oc3 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+cat ~/.ssh/id_rsa.pub | ssh oc4 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+cat ~/.ssh/id_rsa.pub | ssh db1 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+cat ~/.ssh/id_rsa.pub | ssh db2 'mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys'
+
+docker run -p 40080:80 -p 40443:443  -d \
+-v /data/temp:/var/www:rw \
+--name ny_lb -t novice/lemp

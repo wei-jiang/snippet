@@ -1,4 +1,11 @@
+112.97963262,26.23061746
+
 linux下curl简单应用详解 (2013-10-13 17:09:07)
+
+POST方法必须把数据和网址分开，curl就要用到--data参数。
+　　$ curl -X POST --data "data=xxx" example.com/form.cgi
+如果你的数据没有经过表单编码，还可以让curl为你编码，参数是`--data-urlencode`。
+　　$ curl -X POST --data-urlencode "date=April 1" example.com/form.cgi
 
 //restful test by curl
 curl -H "Content-Type: application/json" \
@@ -7,7 +14,10 @@ curl -H "Content-Type: application/json" \
            Boulevard, Portland, OR", "zipcode": 97215, "price": 2,
           "max_seats": 40, "power": true, "wifi": true}' \
      http://localhost:8080/api/coffeeshops/
-     
+curl -H "Content-Type: application/json" \
+     -X POST \
+     -d '{"user_name":"mb01", "passwd": "123456"}' \
+     http://jos.cninone.com/index.php?route=api/seller_login/tmb_login/     
 
 Curl是Linux下一个很强大的http命令行工具，其功能十分强大。
 
@@ -220,7 +230,19 @@ $ curl -E localcert.pem https://remote_server
 
 $ curl dict://dict.org/d:computer
 
+curl -H "Content-Type: application/json" \
+-X POST -d '{"num":1}' \
+http://192.168.1.20:4444/ts_open_a
 
+curl -H "Content-Type: application/json" \
+-X POST -d '{"num":1}' \
+http://192.168.1.20:4444/ts_open_b
+
+curl -H "Content-Type: application/json" \
+-X POST -d '{"num":1}' \
+http://192.168.1.20:4444/ts_open_a_const
+
+curl http://192.168.1.20:4444/ts_open_b
 /*
  "cocos2d" : [
  "core", "kazmath", "shaders", "render-texture", "motion-streak", "node-grid",

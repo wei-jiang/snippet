@@ -1,4 +1,5 @@
 docker exec -t ww mysql -uroot -pfreego -e 'show status like "wsrep_cluster_size"'
+--restart=always
 
 ww$ docker run -d -p 40022:22 -p 40080:80 -p 40443:443 -p 43306:3306 -p 44567:44567 -p 44444:44444 -p 44568:44568 \
 --name aly novice/lemp --wsrep-cluster-address=gcomm:// \
@@ -11,15 +12,16 @@ pp$ docker run -d -p 40022:22 -p 40080:80 -p 40443:443  -p 43306:3306 -p 44567:4
 --wsrep-provider-options="ist.recv_addr=192.168.99.102:44568"
 
 default$ docker run -d -p 40022:22 -p 40080:80 -p 40443:443  -p 43306:3306 -p 44567:44567 -p 44444:44444 -p 44568:44568 \
---name ub2 novice/lemp --wsrep-cluster-address=gcomm://192.168.99.101:44567 \
---wsrep-node-address=192.168.99.100:44567 --wsrep-sst-receive-address=192.168.99.100:44444 \
---wsrep-provider-options="ist.recv_addr=192.168.99.100:44568"
+--name ub2 novice/lemp --wsrep-cluster-address=gcomm://120.25.64.88:44567 \
+--wsrep-node-address=192.168.1.187:44567 --wsrep-sst-receive-address=192.168.1.187:44444 \
+--wsrep-provider-options="ist.recv_addr=192.168.1.187:44568"
 
 //docker galera cluster
 eval $(weave env)
 docker run -p 50022:22 -p 50080:80 -p 50443:443 -d \
 -v /fg_data/apps/msg:/var/www:rw \
---name msg -t novice/lemp 
+-v /fg_data/db:/var/lib/mysql  \
+--name msg -t novice/lemp --wsrep-cluster-address=gcomm:// --wsrep-node-address=120.25.64.88
 
 
 docker run -p 40022:22 -p 40080:80 -p 40443:443 -p 3306:3306 -p 4567:4567 -p 4444:4444 -p 4568:4568 -d \
@@ -55,6 +57,8 @@ ub2$ docker run -d -p 40022:22 -p 40080:80 -p 40443:443  -p 43306:3306 -p 44567:
 --wsrep-node-address=192.168.169.22:44567 --wsrep-sst-receive-address=192.168.169.22:44444 \
 --wsrep-provider-options="ist.recv_addr=192.168.169.22:44568"
 、、、、、、、、、、、、、、、、、、
+docker run -it --name ubkvm --privileged ubuntu:14.04 /bin/bash
+
 docker run -it --name image-dev ubuntu:latest /bin/bash
 docker commit -a "david@cninone.com" -m "Added git" image-dev ubuntu-git
 docker save novice/lemp | xz > lemp.tar.xz
@@ -86,7 +90,10 @@ mysql -h ub -P 3306 -udavid -pfreego
 docker run -d --name ha -v /data/config/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro -v /data/config/haproxy/haproxycert.pem:/etc/ssl/private/haproxycert.pem haproxy
 docker cp ng:/etc/letsencrypt /data/letsencrypt
 
-docker run --name ng -d -p 80:80 -p 443:443 -v /var/run/docker.sock:/tmp/docker.sock:ro novice/nginx-proxy
+docker run --name ng -d -p 80:80 -p 443:443 \
+-v /home/david/nginx.conf:/etc/nginx/nginx.conf \
+-v /var/run/docker.sock:/tmp/docker.sock:ro novice/nginx-proxy
+
 docker run --name ng -p 7922:22 -p 80:80 -p 443:443 -v /data/config/nginx:/etc/nginx:ro -d -t novice/nginx
 docker exec -it ng bash
 kill -HUP $( cat /var/run/nginx.pid )
@@ -178,3 +185,16 @@ COMMIT
 -A FORWARD -i docker0 -o docker0 -j ACCEPT
 COMMIT  
 # Completed on Sun Sep 20 17:35:31 2015
+
+
+docker run -d -p 40022:22 -p 40080:80 -p 40443:443 -p 43306:3306 -p 44567:44567 -p 44444:44444 -p 44568:44568 \
+--name wwpp novice/lemp --wsrep-cluster-address=gcomm:// \
+--wsrep-node-address=49.213.15.107:44567 --wsrep-sst-receive-address=49.213.15.107:44444 \
+--wsrep-provider-options="ist.recv_addr=49.213.15.107:44568"
+
+docker run -d -p 40022:22 -p 40080:80 -p 40443:443  -p 43306:3306 -p 44567:44567 -p 44444:44444 -p 44568:44568 \
+--name ub2 novice/lemp --wsrep-cluster-address=gcomm://49.213.15.107:44567 \
+--wsrep-node-address=192.168.99.100:44567 --wsrep-sst-receive-address=192.168.99.100:44444 \
+--wsrep-provider-options="ist.recv_addr=192.168.99.100:44568"
+
+docker commit -a "david@cninone.com" -m "for backup" guoyu guoyu

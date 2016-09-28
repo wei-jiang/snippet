@@ -20,3 +20,4 @@ Restarts the applications whose configuration has changed.
 Note: After the update command, new application configurations becomes available to start, but do not start automatically until the supervisor service restarts or system reboots (even if autostart option is not disabled). In order to start new application, e.g app2, simply use the following command:
 
 supervisorctl start app2
+supervisorctl restart php

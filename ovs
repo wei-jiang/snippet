@@ -1,0 +1,22 @@
+apt-get install build-essential fakeroot
+apt-get install -y graphviz autoconf automake bzip2 debhelper dh-autoreconf libssl-dev libtool openssl procps python-all python-qt4 python-twisted-conch python-zopeinterface
+DEB_BUILD_OPTIONS='parallel=8 nocheck' fakeroot debian/rules binary
+dpkg -i openvswitch-common_2.5.0-1_amd64.deb openvswitch-switch_2.5.0-1_amd64.deb 
+
+apt-get install uml-utilities
+
+ovs-vsctl add-br ovsbr0
+
+cd /etc/libvirt/qemu/networks
+vi ovsnet.xml
+<network>
+      <name>ovsbr0</name>
+      <forward mode='bridge'/>
+      <bridge name='ovsbr0'/>
+      <virtualport type='openvswitch'/>
+</network>
+
+virsh net-define ovsnet.xml
+virsh net-start ovsbr0
+virsh net-autostart ovsbr0
+virsh net-list
