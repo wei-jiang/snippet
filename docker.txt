@@ -188,7 +188,7 @@ COMMIT
 
 
 docker run -d -p 40022:22 -p 40080:80 -p 40443:443 -p 43306:3306 -p 44567:44567 -p 44444:44444 -p 44568:44568 \
---name wwpp novice/lemp --wsrep-cluster-address=gcomm:// \
+--name cl1 novice/lemp --wsrep-cluster-address=gcomm:// \
 --wsrep-node-address=49.213.15.107:44567 --wsrep-sst-receive-address=49.213.15.107:44444 \
 --wsrep-provider-options="ist.recv_addr=49.213.15.107:44568"
 
@@ -198,3 +198,24 @@ docker run -d -p 40022:22 -p 40080:80 -p 40443:443  -p 43306:3306 -p 44567:44567
 --wsrep-provider-options="ist.recv_addr=192.168.99.100:44568"
 
 docker commit -a "david@cninone.com" -m "for backup" guoyu guoyu
+--name cl2 novice/lemp --wsrep-cluster-address=gcomm://49.213.15.107:44567 \
+--wsrep-node-address=192.168.99.100:44567 --wsrep-sst-receive-address=192.168.99.100:44444 \
+--wsrep-provider-options="ist.recv_addr=192.168.99.100:44568"
+
+docker commit -a "david@cninone.com" -m "for backup" guoyu guoyu
+
+docker run -p 40022:22 -p 40080:80 -p 40443:443 -d --name icbc -t icbc supervisord
+docker build -t icbc .
+
+https://www.ctl.io/developers/blog/post/dockerfile-entrypoint-vs-cmd/
+When using ENTRYPOINT and CMD together it's important that you always use the exec form of both instructions. 
+ENTRYPOINT ["/bin/ping","-c","3"]
+CMD ["localhost"]    /bin/ping -c 3 localhost
+
+ exec form of the ENTRYPOINT/CMD instructions which looks like this:
+CMD ["executable","param1","param2"]
+
+ sudo /etc/init.d/docker restart
+ docker-machine restart default
+ docker run --entrypoint hostname novice/lemp
+

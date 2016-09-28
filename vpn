@@ -1,3 +1,6 @@
+
+https://www.digitalocean.com/community/tutorials/how-to-setup-a-multi-protocol-vpn-server-using-softether
+
 declare Listener0
 		{
 			bool DisableDos false
@@ -34,4 +37,11 @@ docker run -d -p 80:80 -p 1225:443 -p 1979:1979 --name le \
 -v "/root/log:/var/log/lep" \
 -v "/etc/letsencrypt:/etc/letsencrypt" \
 -v "/var/lib/letsencrypt:/var/lib/letsencrypt" \
+
 -t novice/letsencrypt:latest
+
+
+cd vpnclient && make i_read_and_agree_the_license_agreement
+
+ssh -R 9000:localhost:80 root@ServerAddress -N
+

@@ -1,0 +1,62 @@
+https://github.com/zyzo/meteor-ddp-php
+https://github.com/alexhancock/ddp-cpp
+https://github.com/almightycouch/meteorpp
+https://github.com/hharnisc/python-ddp
+https://github.com/hharnisc/python-meteor
+https://pypi.python.org/pypi/django-ddp
+http://www.meteorpedia.com/read/DDP_Clients
+https://github.com/mondora/ddp.js
+https://www.digitalocean.com/community/tutorials/how-to-deploy-a-meteor-js-application-on-ubuntu-14-04-with-nginx
+https://www.digitalocean.com/community/tutorials/the-upstart-event-system-what-it-is-and-how-to-use-it
+
+meteor build --architecture=os.linux.x86_64 ../dist/
+meteor build ../dist/
+
+docker run -d \
+    -e ROOT_URL=http://localhost:8080 \
+    -e MONGO_URL=mongodb://localhost:27017 \
+    -e MONGO_OPLOG_URL=mongodb://localhost \
+    -v /Users/piao/experiment/meteor_test/dist:/bundle \
+    -p 8080:80 \
+    meteorhacks/meteord:base
+    
+docker run -it \
+    --name mt \
+    -e ROOT_URL=http://wwpp.date:8080 \
+    -e MONGO_URL=mongodb://wwpp.date:27017 \
+    -v /root/md:/bundle \
+    -p 8080:80 \
+    novice/meteord  
+    
+    docker run -it \
+    --name mt \
+    -e ROOT_URL=http://192.168.0.188:8080 \
+    -e MONGO_URL=mongodb://192.168.0.188:27017 \
+    -e BUNDLE_URL=/Users/piao/experiment/meteor_test/dist/BookAds.tar.gz \
+    -p 8080:80 \
+    meteorhacks/meteord:base bash 
+    
+    docker run -it \
+    --name mt \
+    -e ROOT_URL=http://192.168.0.103:8080 \
+    -e MONGO_URL=mongodb://192.168.0.103:27017 \
+    -v /Users/piao/experiment/meteor_test/dist:/bundle \
+    -p 8080:80 \
+    novice/meteord  
+docker run -d \
+    --name mt \
+    -e ROOT_URL=http://192.168.0.102:4444 \
+    -e MONGO_URL=mongodb://192.168.0.102:27017 \
+    -v /Users/piao/experiment/meteor_test/dist/bundle:/built_app \
+    -p 4444:80 \
+    novice/meteord      
+
+docker commit -a "david@cninone.com" -m "add meteor env" mub mub
+    
+docker run -it --name mub \
+-p 2016:2016 -p 20000:20000 -p 3000:3000 \
+-v /Users/piao/wisdom_work/gl_repo/fgmap:/fgmap \
+mub bash   
+
+sudo npm install -g n
+sudo n 0.10.43

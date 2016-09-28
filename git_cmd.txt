@@ -44,3 +44,23 @@ git commit -m "Removing all files in .gitignore"
 ssh-add ~/.ssh/git
 cp git ~/.ssh/id_rsa
 git clone ssh://git@ily365.cn:1604/fg_data/git_repo/2016-06-22-tag.git
+
+cd .git/hooks 
+vi post-receive 放入如下命令：
+#!/bin/sh
+cd ..
+env -i git reset --hard
+//and then
+chmod +x post-receive
+
+https://www.digitalocean.com/community/tutorials/how-to-use-git-hooks-to-automate-development-and-deployment-tasks
+
+find ~ -type f -size +2G
+git fetch --all; git branch -vv
+https://git-scm.com/book/ch3-5.html
+git push origin --delete serverfix
+
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/novice79
+ssh-add ~/.ssh/id_rsa
+

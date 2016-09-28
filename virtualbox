@@ -1,0 +1,95 @@
+https://www.virtualbox.org/manual/ch07.html#rdp-viewers
+sudo salt 'fg_ub1' cmd.run "VBoxManage list ostypes"
+sudo salt 'fg_ub1' cmd.run "VBoxManage createvm --name 'win7' --ostype Windows7 --register"
+sudo salt 'fg_ub1' cmd.run "VBoxManage modifyvm 'win7' --memory 2048 --acpi on --boot1 dvd --nic1 bridged"
+sudo salt 'fg_ub1' cmd.run "cd /data/"
+
+sudo salt 'fg_ub1' cmd.run "VBoxManage createhd --filename 'win7.vdi' --size 100000"
+sudo salt 'fg_ub1' cmd.run "VBoxManage storagectl 'win7' --name 'IDE Controller' --add ide --controller PIIX4"
+sudo salt 'fg_ub1' cmd.run "VBoxManage storageattach 'win7' --storagectl 'IDE Controller' --port 0 --device 0 --type hdd --medium 'win7.vdi' "
+sudo salt 'fg_ub1' cmd.run \
+"VBoxManage storageattach 'win7' --storagectl 'IDE Controller' --port 0 --device 1 --type dvddrive --medium /data/windows7sp1x86.iso"
+sudo salt 'fg_ub1' cmd.run \
+"VBoxManage modifyvm 'win7' --vrde on"
+
+VBoxManage modifyvm "VM name" --vrdeauthtype external
+sudo salt 'fg_ub1' cmd.run \
+"VBoxManage modifyvm "win7" --vrdeauthtype null"
+VBoxManage modifyvm "win7" --vrdeport 1606,1607-1608
+
+VBoxManage controlvm "win7" poweroff
+VBoxHeadless --startvm "win7" 
+VBoxManage startvm "win7" --type headless
+VBoxManage modifyvm 'win7' --nic1 bridged --bridgeadapter1 "em1"
+VBoxManage modifyvm 'win7' --nic1 nat
+
+tv:
+404920759
+338jbk
+
+https://www.howtoforge.com/vboxheadless-running-virtual-machines-with-virtualbox-4.3-on-a-headless-ubuntu-14.04-lts-server
+sudo vi /etc/apt/sources.list
+deb http://download.virtualbox.org/virtualbox/debian trusty contrib
+sudo echo "deb http://download.virtualbox.org/virtualbox/debian trusty contrib" >> /etc/apt/sources.list
+wget -q http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | sudo apt-key add -
+sudo apt-get update -y
+sudo apt-get install linux-headers-$(uname -r) build-essential virtualbox-5.0 dkms -y
+wget http://download.virtualbox.org/virtualbox/5.0.20/Oracle_VM_VirtualBox_Extension_Pack-5.0.20-106931.vbox-extpack
+sudo VBoxManage extpack install Oracle_VM_VirtualBox_Extension_Pack-5.0.20-106931.vbox-extpack
+sudo adduser weihu vboxusers
+
+VBoxManage import icbc_pay.ova --dry-run
+VBoxManage import icbc_pay.ova --vsys 0 --unit 4 --ignore --unit 5 --ignore
+VBoxManage modifyvm 'centos6.2' --nic1 nat
+VBoxManage showvminfo "centos6.2"
+VBoxManage startvm "centos6" --type headless
+VBoxManage guestproperty enumerate "centos6.2"
+VBoxManage controlvm "centos6.2" poweroff
+VBoxManage modifyvm "centos6.2" --vrde on --vrdeport 1609
+VBoxManage modifyvm "centos6.2" --longmode off --ioapic off --largepages off
+VBoxHeadless --startvm "centos6"
+vboxmanage unregistervm "centos6.2" --delete
+tar -xvf icbc_pay.ova
+
+VBoxManage createvm --name "centos6" --ostype RedHat --register
+VBoxManage createvm --name "centos6" --register
+VBoxManage modifyvm "centos6" --memory 1024 --acpi on --boot1 dvd --nic1 nat
+VBoxManage storagectl "centos6" --name "IDE Controller" --add ide --controller PIIX4
+VBoxManage createhd --filename "centos6.vdi" --size 30000
+VBoxManage storageattach "centos6" --storagectl "IDE Controller" --port 0 --device 0 --type hdd --medium "centos6.vdi"
+VBoxManage storageattach "centos6" --storagectl "IDE Controller" --port 0 --device 1 --type dvddrive --medium /data/CentOS-6.2-x86_64-minimal.iso
+VBoxManage modifyvm "centos6" --vrde on --vrdeport 1609
+VBoxManage modifyvm centos6 --longmode off --vtxux off --hwvirtex off --synthcpu off
+VBoxManage startvm "centos6" --type headless
+
+VBoxManage controlvm "centos6" poweroff
+vi /etc/sysconfig/network-scripts/ifcfg-eth0
+As Chris R explained, you should edit the contents of that file to end up having this:
+
+DEVICE="eth0"
+HWADDR=MAC Address*System MAC*
+NM_CONTROLLED="no"
+ONBOOT="yes"
+BOOTPROTO="dhcp"
+Then save (escape :wq INTRO) and then reboot:
+
+reboot
+VBoxManage modifyvm "centos6" --natpf1 delete SSH
+$ VBoxManage modifyvm "centos6" --natpf1 "SSH,tcp,0.0.0.0,2022,10.0.2.15,22"
+VBoxManage modifyvm "centos6" --natpf1 "HTTP,tcp,0.0.0.0,2080,10.0.2.15,80"
+VBoxManage modifyvm "centos6" --natpf1 "HTTPS,tcp,0.0.0.0,2443,10.0.2.15,443"
+Once the rule is created, you can verify that by using the command below.
+
+$ VBoxManage showvminfo "centos6" | grep NIC
+ssh -p 2022 root@127.0.0.1
+
+VBoxManage modifyvm "winxp" --vrdeport 1606,1607-1608
+"VBoxManage modifyvm "winxp" --vrdeauthtype null"
+VBoxManage list vms
+VBoxManage list runningvms
+VBoxManage modifyvm 'winxp' --nic1 nat
+VBoxManage modifyvm "winxp" --natpf1 "NCE,tcp,0.0.0.0,2448,10.0.2.15,448"
+VBoxManage modifyvm "winxp" --natpf1 "NCS,tcp,0.0.0.0,2449,10.0.2.15,449"
+VBoxManage startvm "winxp" --type headless
+VBoxManage modifyvm "winxp" --natpf1 delete NCE
+VBoxManage modifyvm "winxp" --natpf1 delete NCS

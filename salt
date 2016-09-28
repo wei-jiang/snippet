@@ -1,0 +1,85 @@
+sudo add-apt-repository ppa:saltstack/salt
+sudo apt-get update -y
+sudo apt-get install salt-master salt-minion
+sudo apt-get install salt-minion -y
+sudo vi /etc/salt/minion
+master: ily365.cn
+id: fg_ub
+sudo service salt-minion restart
+sudo salt-key
+
+Salt-Minion-2015.5.6-Setup-amd64.exe /S /master=ily365.cn /minion-name=ny_zz /start-service=1
+
+nameserver 223.5.5.5
+nameserver 223.6.6.6
+
+master: 192.168.141.80
+id: ny_oc2
+sudo apt-get update -y && sudo apt-get install salt-minion -y
+
+sudo salt 'fg_ub1' cmd.run_all 'ls /data/'
+
+sudo salt 'fg_ub1' cmd.run "vi /etc/apt/sources.list" 
+
+sudo salt 'fg_ub1' pkg.install virtualbox-5.0
+
+sudo salt 'fg_ub1' cmd.run "apt-get update -y" 
+
+sudo salt-cp 'fg_ub1' sources.list /etc/apt/sources.list
+
+sudo salt 'fg_ub1' cmd.run "apt-get install linux-headers-$(uname -r) build-essential virtualbox-5.0 dkms -y" 
+
+sudo salt 'fg_ub1' cmd.run "adduser david vboxusers"
+https://www.howtoforge.com/vboxheadless-running-virtual-machines-with-virtualbox-4.3-on-a-headless-ubuntu-14.04-lts-server
+sudo salt 'fg_ub1' cmd.run_all 'ls /data/'
+sudo salt 'fg_ub1' cmd.run_all 'cd /data/'
+sudo salt 'fg_ub1' cmd.run_all 'wget http://dl.ily365.cn/vc.tar.gz'
+sudo salt 'fg_ub1' cmd.run_all 'tar zxvf vc.tar.gz'
+sudo salt 'fg_ub1' cmd.run_all 'cd vpnclient && make i_read_and_agree_the_license_agreement'
+
+
+sudo salt 'fg_ub1' cmd.run "./vpnclient/vpnclient start"
+sudo salt 'fg_ub1' cmd.run "./vpnclient/vpncmd localhost /CLIENT /CMD NicCreate fg"
+sudo salt 'fg_ub1' cmd.run "./vpnclient/vpncmd localhost /CLIENT /CMD AccountCreate cnn /SERVER:ily365.cn:992 /HUB:VPN /USERNAME:freego /NICNAME:fg"
+sudo salt 'fg_ub1' cmd.run "./vpnclient/vpncmd localhost /CLIENT /CMD AccountPasswordSet cnn /PASSWORD:freego2016 /TYPE:standard"
+sudo salt 'fg_ub1' cmd.run "./vpnclient/vpncmd localhost /CLIENT /CMD AccountConnect cnn"
+sudo salt 'fg_ub1' cmd.run "./vpnclient/vpncmd localhost /CLIENT /CMD AccountStatusGet cnn"
+
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto vpn_myadapter 
+iface vpn_myadapter inet static
+	address 172.16.0.100
+	netmask 255.255.0.0
+	gateway 192.168.0.1
+	dns-nameservers 233.5.5.5
+	dns-nameservers 223.6.6.6
+sudo ifconfig vpn_myadapter down
+sudo ifconfig vpn_myadapter up
+sudo salt 'fg_ub1' cmd.run "./vpnclient/vpnclient stop"
+sudo salt 'fg_ub1' cmd.run "./vpnclient/vpnclient start"
+
+sudo salt-cp 'fg_ub1' interfaces /etc/network/interfaces
+sudo salt 'fg_ub1' cmd.run "ifconfig vpn_fg down"
+sudo salt 'fg_ub1' cmd.run "ifconfig vpn_fg up"
+
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto vpn_fg 
+iface vpn_fg inet static
+	address 172.16.0.102
+	netmask 255.255.0.0
+    
+    
+### BEGIN IPV6 Config
+iface eth0 inet6 static
+pre-up modprobe ipv6
+address 2016:::1
+netmask 64
+gateway 2001:DB8:0:100::1
+dns-nameservers 2001:DB8:0:76::101 2001:DB8:0:76::102
+### END IPV6 Config

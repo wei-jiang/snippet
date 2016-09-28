@@ -132,4 +132,14 @@ sudo virt-install \
 
 
 virsh change-media win7 hdc --eject
+
 virsh change-media win7 hdc /data/virtio-win.iso --insert
+
+
+ssh cl -L 5901:127.0.0.1:5901
+
+service --status-all
+service libvirt-bin restart
+
+apt-get install cpu-checker
+
