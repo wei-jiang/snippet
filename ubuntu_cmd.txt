@@ -122,3 +122,34 @@ EOT
 
 cat ~/.ssh/id_rsa.pub | ssh kjy "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
 //and for SELinux also do: restorecon -R -v ~/.ssh
+
+cat /proc/cpuinfo | grep processor | wc -l
+
+wget https://nginx.org/keys/nginx_signing.key -O - | sudo apt-key add -
+sudo vi /etc/apt/sources.list
+//or xenial
+deb http://nginx.org/packages/mainline/ubuntu/ trusty nginx
+deb-src http://nginx.org/packages/mainline/ubuntu/ trusty nginx
+
+$ sudo apt-get remove nginx-common
+$ sudo apt-get update
+$ sudo apt-get install nginx
+
+Run NGINX Open Source:
+$ sudo nginx
+Verify that NGINX Open Source is up and running:
+$ curl -I 127.0.0.1
+HTTP/1.1 200 OK
+Server: nginx/1.11.5
+
+sudo fdisk -l
+sudo mkfs.ext4 /dev/vdb
+sudo mkdir /data
+sudo echo '/dev/vdb  /data ext4    defaults    0  0' >> /etc/fstab  
+sudo mount -a
+
+docker run --name gh -v /data/blog:/var/lib/ghost -p 8080:2368 -d ghost
+docker run --name gh -v /data/blog:/var/lib/ghost -p 8080:2368 -e NODE_ENV=production ghost
+
+sudo useradd -m -d /data/dl dl
+sudo passwd dl

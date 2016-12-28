@@ -1,0 +1,268 @@
+location /service  {
+  if ($request_method = POST ) {
+    fastcgi_pass 127.0.0.1:1234;
+  }
+
+  if ($request_method = GET ) {
+     alias /path/to/files;
+  }
+
+//nginx.conf
+user  nginx;
+worker_processes  6;
+worker_cpu_affinity 000001 000010 000100 001000 010000 100000;
+worker_rlimit_nofile 65535;
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+events {
+    worker_connections  4096;
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    keepalive_timeout  25;
+
+    gzip  on;
+
+    include /etc/nginx/conf.d/*.conf;
+}
+
+//oc.conf
+upstream oc_nodes {
+  ip_hash;
+  keepalive 5;
+  server 192.168.0.251:40080;
+  server 192.168.0.252:40080;
+  server 192.168.0.253:40080;
+}
+
+limit_req_zone $binary_remote_addr zone=rate_limit1:12m rate=30r/m;
+limit_conn_zone $binary_remote_addr zone=conn_limit1:12m;
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server ipv6only=on;
+        server_name shop.lyclzh.com;
+        #limit_req zone=rate_limit1;
+        limit_conn conn_limit1 20;
+        limit_rate 1m;
+        location / {
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header Host $host;
+                proxy_http_version 1.1;
+                proxy_pass http://oc_nodes;
+        }
+#       location /admin {
+#               allow 192.168.0.0/24;
+#               deny all;
+#       }
+        location ~* /(?:uploads|files)/.*\.php$
+        {
+                deny all;
+        }
+        location ~ /*.sql$
+        {
+                deny all;
+        }
+        location ~ /*.sh$
+        {
+                deny all;
+        }
+}
+server {
+        listen 443 ssl http2;
+        server_name shop.lyclzh.com ;
+        client_max_body_size 100m;
+        root /data/zh;
+        index index.php index.html index.htm;
+
+        ssl on;
+        ssl_certificate /etc/letsencrypt/live/shop.lyclzh.com/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/shop.lyclzh.com/privkey.pem;
+        ssl_client_certificate /etc/nginx/certs/ca.crt;
+        ssl_verify_client optional;
+
+        ssl_session_timeout 5m;
+
+        ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers 'kEECDH+ECDSA+AES128 kEECDH+ECDSA+AES256 kEECDH+AES128 kE                                                                                                                                     ECDH+AES256 kEDH+AES128 kEDH+AES256 DES-CBC3-SHA +SHA !aNULL !eNULL !LOW !kEC                                                                                                                                     DH !DSS !MD5 !EXP !PSK !SRP !CAMELLIA !SEED';
+        ssl_prefer_server_ciphers on;
+        #ssl_dhparam /etc/ssl/dhparams.pem
+        access_log  /var/log/nginx/oc.access.log  main;
+        error_log  /var/log/nginx/oc.error.log  debug;
+
+        location / {
+                proxy_set_header SCHEME "https";
+                proxy_set_header VERIFIED $ssl_client_verify;
+                proxy_set_header DN $ssl_client_s_dn;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header Host $host;
+                proxy_http_version 1.1;
+                proxy_pass http://oc_nodes;
+        }
+        location ~* /(?:uploads|files)/.*\.php$
+        {
+                deny all;
+        }
+        location ~ /*.sql$
+        {
+                deny all;
+        }
+        location ~ /*.sh$
+        {
+                deny all;
+        }
+
+
+}
+//nginx + letsecnrypt
+//http://tom.busby.ninja/letsecnrypt-nginx-reverse-proxy-no-downtime/
+mkdir -p /var/www/ssl-proof/.well-known
+echo "nginx is awesome!" > /var/www/ssl-proof/.well-known/test.html
+//in nginx server block
+    # Here we define the web-root for our SSL proof
+    location /.well-known {
+        root /var/www/ssl-proof/;
+    }
+
+
+wget https://dl.eff.org/certbot-auto && chmod a+x certbot-auto
+./certbot-auto certonly --webroot \
+    -w /var/www/ssl-proof/ \
+     --agree-tos --email david@cninone.com \
+    -d video.5gly.cn
+
+sudo crontab -e
+30 2 * * 1 /home/david/certbot-auto renew >> /var/log/le-renew.log
+35 2 * * 1 /etc/init.d/nginx reload
+
+
+
+//nginx password protect
+sudo sh -c "echo -n 'david:' >> /etc/nginx/.htpasswd"    
+sudo sh -c "openssl passwd -apr1 >> /etc/nginx/.htpasswd"
+location / {
+        try_files $uri $uri/ =404;
+        auth_basic "Restricted Content";
+        auth_basic_user_file /etc/nginx/.htpasswd;
+    }
+
+//tmpl
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name video.5gly.cn;
+
+    # Here we define the web-root for our SSL proof
+    location /.well-known {
+        root /var/www/ssl-proof/;
+    }
+    location / {
+        return 301 https://$server_name$request_uri;
+    }
+
+}
+server {
+    listen 443 ssl http2;
+    listen [::]:443;
+
+    server_name video.5gly.cn;
+
+    # The public and private parts of the certificate are linked here
+    ssl_certificate /etc/letsencrypt/live/video.5gly.cn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/video.5gly.cn/privkey.pem;
+
+    location / {
+        root /data/apps/rtc;
+    }
+}
+// or 
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name rtc-svr.5gly.cn;
+    return 301 https://$server_name$request_uri;
+
+}
+server {
+    listen 443 ssl http2;
+    listen [::]:443;
+
+    server_name rtc-svr.5gly.cn;
+
+    # The public and private parts of the certificate are linked here
+    ssl_certificate /etc/letsencrypt/live/rtc-svr.5gly.cn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/rtc-svr.5gly.cn/privkey.pem;
+
+
+    # Here we define the web-root for our SSL proof
+    location /.well-known {
+        root /var/www/ssl-proof/;
+    }
+
+    location / {
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://127.0.0.1:4444;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_read_timeout 900s;
+
+    }
+}
+// or
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name pay.5gly.cn;
+
+    # Here we define the web-root for our SSL proof
+    location /.well-known {
+        root /var/www/ssl-proof/;
+    }
+    location / {
+        return 301 https://$server_name$request_uri;
+    }
+}
+server {
+    listen 443 ssl http2;
+    listen [::]:443;
+
+    server_name pay.5gly.cn;
+
+    # The public and private parts of the certificate are linked here
+    ssl_certificate /etc/letsencrypt/live/pay.5gly.cn/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/pay.5gly.cn/privkey.pem;
+    location / {
+    #    include cors;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_read_timeout 900s;
+    }
+}

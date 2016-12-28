@@ -23,9 +23,10 @@ VBoxManage startvm "win7" --type headless
 VBoxManage modifyvm 'win7' --nic1 bridged --bridgeadapter1 "em1"
 VBoxManage modifyvm 'win7' --nic1 nat
 
+ny187
 tv:
 404920759
-338jbk
+freego2016
 
 https://www.howtoforge.com/vboxheadless-running-virtual-machines-with-virtualbox-4.3-on-a-headless-ubuntu-14.04-lts-server
 sudo vi /etc/apt/sources.list
@@ -93,3 +94,4 @@ VBoxManage modifyvm "winxp" --natpf1 "NCS,tcp,0.0.0.0,2449,10.0.2.15,449"
 VBoxManage startvm "winxp" --type headless
 VBoxManage modifyvm "winxp" --natpf1 delete NCE
 VBoxManage modifyvm "winxp" --natpf1 delete NCS
+

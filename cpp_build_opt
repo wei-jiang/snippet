@@ -1,0 +1,15 @@
+bootstrap
+.\b2 --help
+
+.\b2 --prefix=d:\Boost threading=multi variant=release runtime-link=static install
+
+//build botan
+python configure.py --cc=msvc --cpu=ia32
+nmake
+python src\scripts\install.py --destdir=c:\Botan --build-dir="build" --bindir=bin --libdir=lib --docdir=docs --includedir=include
+
+//build socket.io-client-cpp
+git clone --recurse-submodules https://github.com/socketio/socket.io-client-cpp.git
+cmake -DBOOST_ROOT:STRING="D:\cpp_libs\Boost" -DBOOST_VER:STRING="1.62" ..
+#define _WEBSOCKETPP_CPP11_STRICT_
+and compile

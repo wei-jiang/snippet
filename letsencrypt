@@ -1,3 +1,4 @@
 /letsencrypt/letsencrypt-auto certonly --standalone --agree-tos --standalone-supported-challenges http-01 --email david@cninone.com -d shop.lyclzh.com
 
-tls-sni-01
+
+letsencrypt/letsencrypt-auto certonly --standalone --agree-tos --standalone-supported-challenges tls-sni-01 --email david@cninone.com -d shop.lyclzh.com

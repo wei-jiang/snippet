@@ -1,3 +1,84 @@
 grep -rl "dc.ily365.cn" .
 
 :w !sudo tee %
+几个cpu
+
+more /proc/cpuinfo |grep "physical id"|uniq|wc -l
+
+每个cpu是几核（假设cpu配置相同）
+
+more /proc/cpuinfo |grep "physical id"|grep "0"|wc -l
+
+cat /proc/cpuinfo | grep processor
+
+1. 查看物理CPU的个数
+#cat /proc/cpuinfo |grep "physical id"|sort |uniq|wc -l
+ 
+2. 查看逻辑CPU的个数
+#cat /proc/cpuinfo |grep "processor"|wc -l
+ 
+3. 查看CPU是几核
+#cat /proc/cpuinfo |grep "cores"|uniq
+ 
+4. 查看CPU的主频
+#cat /proc/cpuinfo |grep MHz|uniq
+
+# cat /etc/issue | grep Linux
+
+Red Hat Enterprise Linux AS release 4 (Nahant Update 5)
+
+(查看当前操作系统发行版信息)
+
+
+# cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c
+
+      8  Intel(R) Xeon(R) CPU            E5410   @ 2.33GHz
+
+(看到有8个逻辑CPU, 也知道了CPU型号)
+
+
+# cat /proc/cpuinfo | grep physical | uniq -c
+
+      4 physical id      : 0
+
+      4 physical id      : 1
+
+(说明实际上是两颗4核的CPU)
+
+
+# getconf LONG_BIT
+
+32
+
+(说明当前CPU运行在32bit模式下, 但不代表CPU不支持64bit)
+
+
+# cat /proc/cpuinfo | grep flags | grep ' lm ' | wc -l
+
+8
+
+(结果大于0, 说明支持64bit计算. lm指long mode, 支持lm则是64bit)
+
+$ npm login
+Username: novice
+Password:
+Email: (this IS public) david@cninone.com
+Logged in as novice on https://registry.npmjs.org/.
+
+npm version patch
+
+npm --registry http://registry.cnpmjs.org i
+
+(1)通过 config 配置指向国内镜像源
+
+npm config set registry http://registry.cnpmjs.org //配置指向源
+npm info express  //下载安装第三方包
+
+(2)通过 npm 命令指定下载源
+
+npm --registry http://registry.cnpmjs.org info express
+
+(3)在配置文件 ~/.npmrc 文件写入源地址
+
+nano ~/.npmrc   //打开配置文件
+registry =https://registry.npm.taobao.org   //写入配置文件

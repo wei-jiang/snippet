@@ -219,3 +219,10 @@ CMD ["executable","param1","param2"]
  docker-machine restart default
  docker run --entrypoint hostname novice/lemp
 
+ docker run --rm -it \
+    -v "/var/www/ssl-proof/rtc-svr:/var/www/ssl-proof/rtc-svr" \
+    -v "$PWD/le/log:/var/log/letsencrypt" \
+    -v "/etc/letsencrypt:/etc/letsencrypt" novice/le  \
+    certonly --webroot -w /var/www/ssl-proof/rtc-svr/ --agree-tos --email david@cninone.com -d rtc-svr.5gly.cn
+
+http://rtc-svr.5gly.cn/.well-known/test.html    
