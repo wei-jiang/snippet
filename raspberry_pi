@@ -1,0 +1,34 @@
+#sudo mount /dev/mmcblk0p1 /boot
+sudo raspi-config
+
+sudo apt-get remove --purge nodered nodejs nodejs-legacy
+cd node*
+sudo cp -R * /usr/local/ 
+
+
+
+# build and install x264
+git clone --depth 1 git://git.videolan.org/x264
+cd x264
+./configure --host=arm-unknown-linux-gnueabi --enable-static --disable-opencl
+make -j 4
+sudo make install
+ 
+# build and make ffmpeg
+git clone --depth=1 git://source.ffmpeg.org/ffmpeg.git
+cd ffmpeg
+./configure --arch=armhf --target-os=linux --enable-gpl --enable-libx264 --enable-nonfree
+make -j4
+sudo make install
+
+
+http://djynet.net/?p=744
+https://www.linux-projects.org/uv4l/installation/
+curl http://www.linux-projects.org/listing/uv4l_repo/lrkey.asc | sudo apt-key add -
+//in  /etc/apt/sources.list
+deb http://www.linux-projects.org/listing/uv4l_repo/raspbian/ jessie main
+sudo apt-get update
+sudo apt-get install uv4l uv4l-raspicam uv4l-server uv4l-uvc uv4l-webrtc
+sudo apt-get install uv4l-raspicam-extras 
+sudo service uv4l_raspicam restart
+v4l2-ctl --list-devices

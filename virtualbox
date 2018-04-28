@@ -23,10 +23,7 @@ VBoxManage startvm "win7" --type headless
 VBoxManage modifyvm 'win7' --nic1 bridged --bridgeadapter1 "em1"
 VBoxManage modifyvm 'win7' --nic1 nat
 
-ny187
-tv:
-404920759
-freego2016
+
 
 https://www.howtoforge.com/vboxheadless-running-virtual-machines-with-virtualbox-4.3-on-a-headless-ubuntu-14.04-lts-server
 sudo vi /etc/apt/sources.list
@@ -84,7 +81,7 @@ Once the rule is created, you can verify that by using the command below.
 $ VBoxManage showvminfo "centos6" | grep NIC
 ssh -p 2022 root@127.0.0.1
 
-VBoxManage modifyvm "winxp" --vrdeport 1606,1607-1608
+VBoxManage modifyvm "winxp" --vrdeport 1606,1607-1608,1979
 "VBoxManage modifyvm "winxp" --vrdeauthtype null"
 VBoxManage list vms
 VBoxManage list runningvms

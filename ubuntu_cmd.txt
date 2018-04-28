@@ -153,3 +153,170 @@ docker run --name gh -v /data/blog:/var/lib/ghost -p 8080:2368 -e NODE_ENV=produ
 
 sudo useradd -m -d /data/dl dl
 sudo passwd dl
+
+top
+us: user cpu time (or) % CPU time spent in user space
+sy: system cpu time (or) % CPU time spent in kernel space
+ni: user nice cpu time (or) % CPU time spent on low priority processes
+id: idle cpu time (or) % CPU time spent idle
+wa: io wait cpu time (or) % CPU time spent in wait (on disk)
+hi: hardware irq (or) % CPU time spent servicing/handling hardware interrupts
+si: software irq (or) % CPU time spent servicing/handling software interrupts
+st: steal time - - % CPU time in involuntary wait by virtual cpu while hypervisor is servicing another processor (or) % CPU time stolen from a virtual machine
+
+16.04
+sudo apt-get update
+sudo apt-get install coturn
+
+#sudo turnadmin -a -u freego -p freego2017 -r yunyougo.com
+sudo vi /etc/turnserver.conf
+# Coturn TURN SERVER configuration file
+lt-cred-mech
+user=freego:freego2017
+realm=yunyougo.com
+# end
+sudo apt-get install supervisor
+sudo vi /etc/supervisor/conf.d/coturn.conf
+
+[program:coturn]
+command=/usr/bin/turnserver
+priority=3
+autostart=true
+autorestart=true
+
+sudo systemctl enable supervisor
+sudo systemctl start supervisor
+
+nohup turnserver &
+//install mail server
+14.04
+sudo apt-get install postfix
+sudo dpkg-reconfigure postfix
+1. Internet Site
+2. freego.com
+3. freego
+4. freego.com, localhost.localdomain, localhost
+5. No
+6. 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 192.168.0.0/24
+7. 0
+8. +
+9. all
+sudo vi /etc/postfix/main.cf
+//change
+smtpd_tls_cert_file=/etc/letsencrypt/live/all/fullchain.pem
+smtpd_tls_key_file=/etc/letsencrypt/live/all/privkey.pem
+//add belows
+home_mailbox = Maildir/
+smtpd_sasl_type = dovecot
+smtpd_sasl_path = private/auth
+smtpd_sasl_local_domain =
+smtpd_sasl_security_options = noanonymous
+broken_sasl_auth_clients = yes
+smtpd_sasl_auth_enable = yes
+smtpd_recipient_restrictions = permit_sasl_authenticated,permit_mynetworks,reject_unauth_destination
+smtp_tls_security_level = may
+smtpd_tls_security_level = may
+smtp_tls_note_starttls_offer = yes
+smtpd_tls_loglevel = 1
+smtpd_tls_received_header = yes
+
+sudo vi /etc/postfix/master.cf
+//uncomment below lines
+submission inet n       -       -       -       -       smtpd
+  -o syslog_name=postfix/submission
+  -o smtpd_tls_security_level=encrypt
+  -o smtpd_sasl_auth_enable=yes
+#  -o smtpd_reject_unlisted_recipient=no
+#  -o smtpd_client_restrictions=$mua_client_restrictions
+#  -o smtpd_helo_restrictions=$mua_helo_restrictions
+#  -o smtpd_sender_restrictions=$mua_sender_restrictions
+#  -o smtpd_recipient_restrictions=
+  -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
+  -o milter_macro_daemon_name=ORIGINATING
+smtps     inet  n       -       -       -       -       smtpd
+  -o syslog_name=postfix/smtps
+  -o smtpd_tls_wrappermode=yes
+  -o smtpd_sasl_auth_enable=yes
+#  -o smtpd_reject_unlisted_recipient=no
+#  -o smtpd_client_restrictions=$mua_client_restrictions
+#  -o smtpd_helo_restrictions=$mua_helo_restrictions
+#  -o smtpd_sender_restrictions=$mua_sender_restrictions
+#  -o smtpd_recipient_restrictions=
+  -o smtpd_relay_restrictions=permit_sasl_authenticated,reject
+  -o milter_macro_daemon_name=ORIGINATING
+sudo apt-get install dovecot-common
+Issue the following values for the prompts during installation.
+1. yes
+2. mail.freego.com
+sudo vi /etc/dovecot/conf.d/10-master.conf
+# Postfix smtp-auth  ( line no:95 )
+unix_listener /var/spool/postfix/private/auth {
+mode = 0660
+user = postfix
+group = postfix
+}  
+sudo vi /etc/dovecot/conf.d/10-auth.conf file and find (line no:100)
+auth_mechanisms = plain
+and replace
+auth_mechanisms = plain login
+sudo service postfix restart
+sudo service dovecot restart
+sudo apt-get install dovecot-imapd dovecot-pop3d
+
+sudo vi /etc/dovecot/conf.d/10-mail.conf file and find (Line no:30 )
+mail_location = mbox:~/mail:INBOX=/var/mail/%u
+Replace with
+mail_location = maildir:~/Maildir
+
+sudo vi /etc/dovecot/conf.d/20-pop3.conf file and find and uncomment the below line ( Line no : 50 )
+pop3_uidl_format = %08Xu%08Xv
+
+sudo vi /etc/dovecot/conf.d/10-ssl.conf file and find and uncomment the below line ( Line no : 6 )
+ssl = yes
+ssl_cert = </etc/letsencrypt/live/all/fullchain.pem
+ssl_key = </etc/letsencrypt/live/all/privkey.pem
+
+sudo service dovecot restart
+Create some users and check using mail clients like thunderbird or outlook
+sudo useradd -m david -s /sbin/nologin
+sudo passwd david
+http://www.krizna.com/ubuntu/setup-mail-server-ubuntu-14-04/
+sudo systemctl restart postfix dovecot
+//16.04
+sudo apt-get install postfix dovecot-core dovecot-imapd dovecot-pop3d
+vi /etc/dovecot/dovecot.conf
+protocols = pop3 pop3s imap imaps
+
+
+
+
+Uninstall salt-minion
+To remove just salt-minion package itself from Ubuntu 14.04 (Trusty Tahr) execute on terminal:
+
+sudo apt-get remove salt-minion
+Uninstall salt-minion and it's dependent packages
+To remove the salt-minion package and any other dependant package which are no longer needed from Ubuntu Trusty.
+
+sudo apt-get remove --auto-remove salt-minion
+Purging salt-minion
+If you also want to delete configuration and/or data files of salt-minion from Ubuntu Trusty then this will work:
+
+sudo apt-get purge salt-minion
+To delete configuration and/or data files of salt-minion and it's dependencies from Ubuntu Trusty then execute:
+
+sudo apt-get purge --auto-remove salt-minion
+
+https://www.digitalocean.com/community/tutorials/how-to-route-web-traffic-securely-without-a-vpn-using-a-socks-tunnel
+
+Set up sock5 tunnel by ssh:
+
+ssh -D 8123 -f -C -q -N sammy@example.com
+Explanation of arguments
+
+-D: Tells SSH that we want a SOCKS tunnel on the specified port number (you can choose a number between 1025-65536)
+-f: Forks the process to the background
+-C: Compresses the data before sending it
+-q: Uses quiet mode
+-N: Tells SSH that no command will be sent once the tunnel is up
+
+ssh -D 8123 -C -q -N wwpp

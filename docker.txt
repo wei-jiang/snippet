@@ -5,9 +5,9 @@ ww$ docker run -d -p 40022:22 -p 40080:80 -p 40443:443 -p 43306:3306 -p 44567:44
 --name aly novice/lemp --wsrep-cluster-address=gcomm:// \
 --wsrep-node-address=192.168.99.101:44567 --wsrep-sst-receive-address=192.168.99.101:44444 \
 --wsrep-provider-options="ist.recv_addr=192.168.99.101:44568"
-
-pp$ docker run -d -p 40022:22 -p 40080:80 -p 40443:443  -p 43306:3306 -p 44567:44567 -p 44444:44444 -p 44568:44568 \
+4:44444 -p 44568:44568 \
 --name ub novice/lemp --wsrep-cluster-address=gcomm://192.168.99.101:44567 \
+pp$ docker run -d -p 40022:22 -p 40080:80 -p 40443:443  -p 43306:3306 -p 44567:44567 -p 4444
 --wsrep-node-address=192.168.99.102:44567 --wsrep-sst-receive-address=192.168.99.102:44444 \
 --wsrep-provider-options="ist.recv_addr=192.168.99.102:44568"
 
@@ -226,3 +226,17 @@ CMD ["executable","param1","param2"]
     certonly --webroot -w /var/www/ssl-proof/rtc-svr/ --agree-tos --email david@cninone.com -d rtc-svr.5gly.cn
 
 http://rtc-svr.5gly.cn/.well-known/test.html    
+docker run -d -p 40080:80 -p 8222:8222 -v D:/workspace/temp:/var/www:rw --name tt novice/lemp --wsrep-cluster-address=gcomm:// 
+
+//if occur like: docker: Error response from daemon: driver failed programming external connectivity on endpoint 
+1、docker rm -f all containers.
+2、docker network rm network interfaces.
+3、sudo rm /var/lib/docker/network/files/local-kv.db
+4、service docker restart //and restart, it worked. thanks buddies.
+
+Try the following (I haven't tested this though):
+
+docker rm -f $(docker ps -aq) (will remove all of your containers)
+docker network rm $(docker network ls -q) (will remove all of your networks)
+docker run --rm -v /var/lib/docker/network/files:/network busybox rm /network/local-kv.db
+Then restart Docker for Mac and you should be good to go 

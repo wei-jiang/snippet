@@ -25,3 +25,27 @@ centos6 pub key login
 //in server 
 chmod -R 700 ~/.ssh
 restorecon -R -v ~/.ssh
+
+//kjy 
+
+/data/vpnserver/vpncmd localhost /SERVER /CMD ServerPasswordSet freego
+/data/vpnserver/vpncmd localhost /SERVER /PASSWORD:freego /adminhub:DEFAULT /CMD SecureNatEnable
+/data/vpnserver/vpncmd localhost /SERVER /PASSWORD:freego /CMD SstpEnable yes
+/data/vpnserver/vpncmd localhost /SERVER /PASSWORD:freego /CMD ListenerDelete 443
+
+/data/vpnserver/vpncmd localhost:992 /SERVER /PASSWORD:freego /CMD ServerCertSet \
+/LOADCERT:/etc/letsencrypt/live/game.cninone.com/fullchain.pem \
+/LOADKEY:/etc/letsencrypt/live/game.cninone.com/privkey.pem
+
+/data/vpnserver/vpncmd localhost:992 /SERVER /PASSWORD:freego /adminhub:DEFAULT /CMD UserList
+/data/vpnserver/vpncmd localhost:992 /SERVER /PASSWORD:freego /adminhub:DEFAULT /CMD SstpGet
+
+/data/vpnserver/vpncmd localhost:992 /SERVER /PASSWORD:freego /CMD ServerCertSet \
+/LOADCERT:/etc/letsencrypt/archive/game.cninone.com/fullchain1.pem \
+/LOADKEY:/etc/letsencrypt/archive/game.cninone.com/privkey1.pem
+
+//客户端连接时注意端口 very important
+/data/vpnserver/vpnserver stop
+/data/vpnserver/vpnserver start
+
+docker run --privileged -d --name ub -p 10022:22 -p 80:80 -p 443:443 -v /data/share:/data -v /etc/letsencrypt:/etc/letsencrypt ub16_2017_11_02

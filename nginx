@@ -184,8 +184,8 @@ server {
     server_name video.5gly.cn;
 
     # The public and private parts of the certificate are linked here
-    ssl_certificate /etc/letsencrypt/live/video.5gly.cn/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/video.5gly.cn/privkey.pem;
+    #ssl_certificate /etc/letsencrypt/live/video.5gly.cn/fullchain.pem;
+    #ssl_certificate_key /etc/letsencrypt/live/video.5gly.cn/privkey.pem;
 
     location / {
         root /data/apps/rtc;
@@ -197,6 +197,9 @@ server {
     listen [::]:80;
 
     server_name rtc-svr.5gly.cn;
+    location /.well-known {
+        root /var/www/ssl-proof/;
+    }
     return 301 https://$server_name$request_uri;
 
 }
@@ -251,8 +254,8 @@ server {
     server_name pay.5gly.cn;
 
     # The public and private parts of the certificate are linked here
-    ssl_certificate /etc/letsencrypt/live/pay.5gly.cn/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/pay.5gly.cn/privkey.pem;
+    #ssl_certificate /etc/letsencrypt/live/pay.5gly.cn/fullchain.pem;
+    #ssl_certificate_key /etc/letsencrypt/live/pay.5gly.cn/privkey.pem;
     location / {
     #    include cors;
         proxy_set_header Host $host;
@@ -266,3 +269,62 @@ server {
         proxy_read_timeout 900s;
     }
 }
+
+openssl pkcs12 -in oc.p12 -out oc.key.pem -nocerts -nodes
+openssl pkcs12 -in oc.p12 -out oc.crt.pem -clcerts -nokeys
+Will create key/cert pair in current directory.
+
+Now, to use it:
+
+curl_setopt($ch, CURLOPT_SSLCERT, 'file.crt.pem');
+curl_setopt($ch, CURLOPT_SSLKEY, 'file.key.pem');
+curl_setopt($ch, CURLOPT_SSLCERTPASSWD, 'pass');
+curl_setopt($ch, CURLOPT_SSLKEYPASSWD, 'pass');
+Where pass is the password from .p12 file.
+
+https://arcweb.co/securing-websites-nginx-and-client-side-certificate-authentication-linux/
+http://nategood.com/client-side-certificate-authentication-in-ngi
+/etc/ssl$ sudo vi openssl.cnf
+
+openssl genrsa -des3 -out /etc/ssl/ca/certs/users/oc.key 1024
+openssl req -new -key /etc/ssl/ca/certs/users/oc.key \
+    -out /etc/ssl/ca/certs/users/oc.csr
+openssl x509 -req -days 1095 \
+    -in /etc/ssl/ca/certs/users/oc.csr \
+    -CA /etc/ssl/ca/certs/ca.crt \
+    -CAkey /etc/ssl/ca/private/ca.key \
+    -CAserial /etc/ssl/ca/serial \
+    -CAcreateserial \
+    -out /etc/ssl/ca/certs/users/oc.crt
+
+openssl pkcs12 -export -clcerts \
+    -in /etc/ssl/ca/certs/users/oc.crt \
+    -inkey /etc/ssl/ca/certs/users/oc.key \
+    -out /etc/ssl/ca/certs/users/oc.p12    
+
+
+curl --insecure --key ./oc.key.pem --cert ./oc.crt.pem https://spp.5gly.cn/test
+
+//if [emerg]: bind() to 0.0.0.0:80 failed (98: Address already in use)
+sudo fuser -k 80/tcp
+service nginx start
+
+
+//trailing slash is important
+location /rethinkdb/ {
+    #rewrite /rethinkdb(.*) /$1  break;
+    proxy_set_header Accept-Encoding ""; # no compression allowed or next won't work
+    proxy_pass         http://localhost:8080/;
+    proxy_redirect     off;
+    proxy_set_header   Host $host;
+    sub_filter "http://$host/" "http://$host/rethinkdb/";
+    sub_filter_once off;
+}
+
+
+sudo ufw default allow incoming
+sudo ufw default allow outgoing
+
+sudo ufw deny 8080
+sudo ufw status verbose
+https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-with-ufw-on-ubuntu-14-04

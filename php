@@ -75,3 +75,14 @@ http://eddmann.com/posts/compiling-php-5-5-with-zts-and-pthreads-support/
 https://github.com/zyzo/meteor-ddp-php
 http://ask.xmodulo.com/check-glibc-version-linux.html
 
+openssl pkcs12 -in file.p12 -out file.key.pem -nocerts -nodes
+openssl pkcs12 -in file.p12 -out file.crt.pem -clcerts -nokeys
+Will create key/cert pair in current directory.
+
+Now, to use it:
+
+curl_setopt($ch, CURLOPT_SSLCERT, 'file.crt.pem');
+curl_setopt($ch, CURLOPT_SSLKEY, 'file.key.pem');
+curl_setopt($ch, CURLOPT_SSLCERTPASSWD, 'pass');
+curl_setopt($ch, CURLOPT_SSLKEYPASSWD, 'pass');
+Where pass is the password from .p12 file.

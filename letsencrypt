@@ -2,3 +2,40 @@
 
 
 letsencrypt/letsencrypt-auto certonly --standalone --agree-tos --standalone-supported-challenges tls-sni-01 --email david@cninone.com -d shop.lyclzh.com
+
+//16.04
+letsencrypt certonly --webroot \
+    -w /var/www/ssl-proof/ \
+    --agree-tos --email ww@wwpp.date \
+    -d wwpp.date
+
+
+wget https://dl.eff.org/certbot-auto
+chmod a+x certbot-auto
+
+./certbot-auto certonly --webroot \
+    -w /var/www/ssl-proof/ \
+    --agree-tos --email david@cninone.com \
+    -d spp.yunyougo.com   
+
+./certbot-auto certonly --webroot \
+    -w /var/www/ssl-proof/ \
+    --agree-tos --email david@cninone.com \
+    -d buy.nanyue.net.cn
+
+//in kjy server
+/data/letsencrypt/letsencrypt-auto certonly --webroot \
+    -w /data/share/ssl-proof/ \
+    --agree-tos --email david@cninone.com \
+    -d cninone.com   
+
+//16.04
+letsencrypt certonly --webroot \
+    -w /var/www/ssl-proof/ \
+    --agree-tos --email ww@wwpp.date \
+    -d freeland.online   
+//aly
+sudo /letsencrypt/letsencrypt-auto certonly --webroot \
+    -w /var/www/ssl-proof/ \
+    --agree-tos --email david@cninone.com \
+    -d ali.ily365.cn   

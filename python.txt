@@ -1,0 +1,1 @@
+virtualenv env_django --python=D:/installed/python35/python.exe
