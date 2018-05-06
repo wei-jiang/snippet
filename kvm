@@ -51,6 +51,8 @@ virsh change-media winxp hdc /data/virtio-win.iso --insert
 ssh cl0 -L 5900:127.0.0.1:5900
 sudo virsh start winxp
 sudo virsh list
+virsh reboot win7
+virsh shutdown win7
 virsh destroy win7
 virsh undefine win7
 #virsh vol-delete --pool vg0 win7.img
@@ -143,3 +145,13 @@ service libvirt-bin restart
 
 apt-get install cpu-checker
 
+david@ubuntu:/data$ virsh domblklist win7
+Target     Source
+------------------------------------------------
+hda        /data/win7.img
+hdb        /data/os_imgs/windows7sp1x86.iso
+
+david@ubuntu:/data$ sudo virsh change-media win7 hdb --eject
+Successfully ejected media.
+david@ubuntu:/data/os_imgs$ sudo virsh change-media win7 hdb /data/os_imgs/virtio-win.iso --insert
+Successfully inserted media.

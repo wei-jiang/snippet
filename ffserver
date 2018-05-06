@@ -1,4 +1,5 @@
 https://ffmpeg.org/ffserver.html
+sudo add-apt-repository ppa:mc3man/trusty-media
 
 ffserver -f /opt/ffmpeg/share/ffserver.conf &
 ffmpeg -i rtsp://192.168.0.10/h264ESVideoTest -c copy -f flv http://localhost:8090/feed1.ffm &

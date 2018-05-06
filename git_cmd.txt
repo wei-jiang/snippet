@@ -45,6 +45,8 @@ ssh-add ~/.ssh/git
 cp git ~/.ssh/id_rsa
 git clone ssh://git@ily365.cn:1604/fg_data/git_repo/2016-06-22-tag.git
 
+ssh-copy-id -i ~/.ssh/id_rsa.pub user@hostname.example.com -p 1604
+
 cd .git/hooks 
 vi post-receive 放入如下命令：
 #!/bin/sh
@@ -64,3 +66,44 @@ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/novice79
 ssh-add ~/.ssh/id_rsa
 
+//git deploy code
+//in porduction serverfix
+mkdir -p /data/git_repo/mch && cd /data/git_repo/mch
+git init --bare
+vi hooks/post-receive
+chmod +x hooks/post-receive
+#!/bin/bash
+while read oldrev newrev ref
+do
+    if [[ $ref =~ .*/master$ ]];
+    then
+        echo "Master ref received.  Deploying master branch to production..."
+        git --work-tree=/data/apps/mch --git-dir=/data/git_repo/mch_mgr checkout -f
+    else
+        echo "Ref $ref successfully received.  Doing nothing: only the master branch may be deployed on this server."
+    fi
+done
+//and in client
+git clone ssh://dev@5gly.cn:1611/data/git_repo/mch_mgr
+//add files && commit && push 
+
+git clone ssh://git@192.168.1.188:1604/gitolite-admin
+
+//gitolite 
+sudo adduser --system --shell /bin/bash --group --disabled-password --home /home/git git
+sudo apt-get install gitolite3
+scp ~/.ssh/id_rsa.pub david@192.168.1.188:/home/david
+sudo su - git
+gitolite setup -pk /home/david/*.pub
+
+
+ssh git@hostname info
+ssh-keygen -t rsa
+
+git fetch --all
+Then, you have two options:
+
+git reset --hard origin/master
+OR If you are on some other branch:
+
+git reset --hard origin/<branch_name>

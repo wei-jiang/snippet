@@ -226,3 +226,4 @@ CMD ["executable","param1","param2"]
     certonly --webroot -w /var/www/ssl-proof/rtc-svr/ --agree-tos --email david@cninone.com -d rtc-svr.5gly.cn
 
 http://rtc-svr.5gly.cn/.well-known/test.html    
+docker run -d -p 40080:80 -p 8222:8222 -v D:/workspace/temp:/var/www:rw --name tt novice/lemp --wsrep-cluster-address=gcomm:// 

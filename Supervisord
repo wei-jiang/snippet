@@ -29,3 +29,7 @@ supervisorctl restart ffserver
 https://www.digitalocean.com/community/tutorials/the-upstart-event-system-what-it-is-and-how-to-use-it
 https://www.digitalocean.com/community/tutorials/systemd-essentials-working-with-services-units-and-the-journal
 
+//ubuntu 16.04
+sudo apt-get install supervisor
+sudo systemctl enable supervisor
+sudo systemctl start supervisor

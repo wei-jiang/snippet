@@ -33,6 +33,8 @@ freego2016
 ServerCertSet /etc/letsencrypt/live/novice.ren/fullchain.pem       
 VPN Server/VPN>ServerCertSet /LOADCERT:/etc/letsencrypt/live/novice.ren/fullchain.pem /LOADKEY:/etc/letsencrypt/live/novice.ren/privkey.pem
 
+/data/vpnserver/vpncmd localhost:992 /SERVER /PASSWORD:freego /CMD ServerCertSet /LOADCERT:/etc/letsencrypt/live/novice.ren/fullchain.pem /LOADKEY:/etc/letsencrypt/live/novice.ren/privkey.pem
+
 docker run -d -p 80:80 -p 1225:443 -p 1979:1979 --name le \
 -v "/root/log:/var/log/lep" \
 -v "/etc/letsencrypt:/etc/letsencrypt" \

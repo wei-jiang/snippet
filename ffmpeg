@@ -1,0 +1,10 @@
+//raspberry pi
+v4l2-ctl --list-devices
+ffmpeg -f v4l2 -list_formats all -i /dev/video0
+ffmpeg -f v4l2 -framerate 25 -video_size 640x480 -i /dev/video0 output.mkv
+
+ffmpeg -s 320x240 -f video4linux2 -i /dev/video0 -f mpeg1video output.mkv
+
+//windows
+ffmpeg -y -f vfwcap -i list
+ffmpeg -y -f vfwcap -r 25 -i 0 out.mp4
