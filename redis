@@ -1,0 +1,13 @@
+https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-redis-on-ubuntu-16-04
+https://gist.github.com/solar/3898630
+
+//in docker edit supervisord.conf
+[program:redis]
+command=/usr/local/bin/redis-server /etc/redis.conf
+autostart=true
+autorestart=true
+user=root
+
+//and 
+sudo supervisorctl reread
+sudo supervisorctl add redis

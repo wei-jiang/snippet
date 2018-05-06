@@ -306,4 +306,17 @@ To delete configuration and/or data files of salt-minion and it's dependencies f
 
 sudo apt-get purge --auto-remove salt-minion
 
-novice.ren remote login passwd:932895
+https://www.digitalocean.com/community/tutorials/how-to-route-web-traffic-securely-without-a-vpn-using-a-socks-tunnel
+
+Set up sock5 tunnel by ssh:
+
+ssh -D 8123 -f -C -q -N sammy@example.com
+Explanation of arguments
+
+-D: Tells SSH that we want a SOCKS tunnel on the specified port number (you can choose a number between 1025-65536)
+-f: Forks the process to the background
+-C: Compresses the data before sending it
+-q: Uses quiet mode
+-N: Tells SSH that no command will be sent once the tunnel is up
+
+ssh -D 8123 -C -q -N wwpp

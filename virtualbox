@@ -80,7 +80,7 @@ Once the rule is created, you can verify that by using the command below.
 $ VBoxManage showvminfo "centos6" | grep NIC
 ssh -p 2022 root@127.0.0.1
 
-VBoxManage modifyvm "winxp" --vrdeport 1606,1607-1608
+VBoxManage modifyvm "winxp" --vrdeport 1606,1607-1608,1979
 //ny winxp vrde port=1979
 "VBoxManage modifyvm "winxp" --vrdeauthtype null"
 VBoxManage list vms

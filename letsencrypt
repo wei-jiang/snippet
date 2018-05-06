@@ -34,3 +34,8 @@ letsencrypt certonly --webroot \
     -w /var/www/ssl-proof/ \
     --agree-tos --email ww@wwpp.date \
     -d freeland.online   
+//aly
+sudo /letsencrypt/letsencrypt-auto certonly --webroot \
+    -w /var/www/ssl-proof/ \
+    --agree-tos --email david@cninone.com \
+    -d ali.ily365.cn   
