@@ -47,3 +47,21 @@ cd vpnclient && make i_read_and_agree_the_license_agreement
 
 ssh -R 9000:localhost:80 root@ServerAddress -N
 
+//socks 代理
+ssh -f -N -D 127.0.0.1:9000 nv
+
+
+-f
+输入密码后进入后台模式(Requests ssh to go to background just before command execution.)
+
+-N
+不执行远程命令,用于端口转发( Do not execute a remote command. This is useful for just for warding ports (protocol version 2 only).)
+
+-D
+socket5代理(Specifies a local “dynamic” application-level port forwarding.Currently the SOCKS4 and SOCKS5 protocols are supported, and ssh will act as a SOCKS server.)
+
+-L
+tcp转发(Specifies that the given port on the local (client) host is to be forwarded to the given host and port on the remote side.)
+
+-C
+使用数据压缩,网速快时会影响速度(Compression is desirable on modem lines and other slow connections, but will only slow down things on fast networks.The compression algorithm is the same used by gzip)
