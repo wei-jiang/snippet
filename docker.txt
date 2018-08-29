@@ -225,7 +225,7 @@ CMD ["executable","param1","param2"]
     -v "/etc/letsencrypt:/etc/letsencrypt" novice/le  \
     certonly --webroot -w /var/www/ssl-proof/rtc-svr/ --agree-tos --email david@cninone.com -d rtc-svr.5gly.cn
 
-http://rtc-svr.5gly.cn/.well-known/test.html    
+
 docker run -d -p 40080:80 -p 8222:8222 -v D:/workspace/temp:/var/www:rw --name tt novice/lemp --wsrep-cluster-address=gcomm:// 
 
 //if occur like: docker: Error response from daemon: driver failed programming external connectivity on endpoint 
@@ -240,3 +240,7 @@ docker rm -f $(docker ps -aq) (will remove all of your containers)
 docker network rm $(docker network ls -q) (will remove all of your networks)
 docker run --rm -v /var/lib/docker/network/files:/network busybox rm /network/local-kv.db
 Then restart Docker for Mac and you should be good to go 
+
+docker inspect mdb | grep -i -A 5 restartPolicy
+docker run --restart=always --name mdb -p 3306:3306 -v /data/slmdb:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=freego -e MYSQL_USER=david -e MYSQL_PASSWORD=freego -d mariadb
+docker update --restart=always mdb

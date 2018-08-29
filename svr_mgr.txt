@@ -49,3 +49,34 @@ restorecon -R -v ~/.ssh
 /data/vpnserver/vpnserver start
 
 docker run --privileged -d --name ub -p 10022:22 -p 80:80 -p 443:443 -v /data/share:/data -v /etc/letsencrypt:/etc/letsencrypt ub16_2017_11_02
+
+//fail2ban
+sudo apt-get install fail2ban sendmail mailutils
+awk '{ printf "# "; print; }' /etc/fail2ban/jail.conf | sudo tee /etc/fail2ban/jail.local
+sudo vim /etc/fail2ban/jail.local
+[DEFAULT]
+# ignoreip = 127.0.0.1/8
+bantime  = 7200
+# findtime = 600
+maxretry = 3
+sendername = Fail2Ban
+destemail = david@cninone.com
+mta = sendmail
+action = %(action_mwl)s
+# or action = mail-whois[name=SSH, dest=david@cninone.com, sender=david@freego.com, sendername="阿里云ily365"]
+[ssh]
+# enabled  = true
+port     = ssh
+# filter   = sshd
+# logpath  = /var/log/auth.log
+# maxretry = 3
+
+sudo vi /etc/hosts
+127.0.0.1       localhost.localdomain localhost NYHS-DMZ1
+127.0.1.1       NYHS-DMZ1
+
+http://toon.io/fail2ban-send-sms-user-banned/
+1. Create a new action in the /etc/fail2ban/actions.d directory 
+2. Configure jail.local to use that action
+
+sudo service fail2ban restart
